@@ -1,4 +1,4 @@
-package com.server.domain;
+package com.server.controlserver.domain;
 
 import jakarta.persistence.*;
 import lombok.*;

@@ -1,6 +1,6 @@
-package com.server.repository;
+package com.server.controlserver.repository;
 
-import com.server.domain.GPS;
+import com.server.controlserver.domain.GPS;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 

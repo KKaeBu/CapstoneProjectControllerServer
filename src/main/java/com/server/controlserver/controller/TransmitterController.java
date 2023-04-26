@@ -1,7 +1,7 @@
-package com.server.controller;
+package com.server.controlserver.controller;
 
-import com.server.domain.GPS;
-import com.server.service.TransmitterService;
+import com.server.controlserver.domain.GPS;
+import com.server.controlserver.service.TransmitterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
