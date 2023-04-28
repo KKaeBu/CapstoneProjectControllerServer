@@ -2,6 +2,7 @@ package com.server.controlserver.repository;
 
 import com.server.controlserver.domain.GPS;
 import jakarta.persistence.EntityManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -28,7 +29,8 @@ public class JpaGPSRepository implements GPSRepository{
     }
 
     @Override
-    public Optional<GPS> findLastest() {
-        return Optional.empty();
+    public Optional<GPS> findLastest(int id) {
+        GPS gps = em.find(GPS.class, id);
+        return Optional.ofNullable(gps);
     }
 }
