@@ -18,11 +18,11 @@ public class GPS {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private Long latitude; //위도
+    private double latitude; //위도
     @Column(nullable = false)
-    private Long longitude; //경도
+    private double longitude; //경도
     @Column(nullable = false)
-    private Long altitude; //고도
+    private double altitude; //고도
     @Column(name = "create_time", nullable = false)
     @CreationTimestamp
     private Date createTime; // default값으로 저장시간 자동으로 추가
