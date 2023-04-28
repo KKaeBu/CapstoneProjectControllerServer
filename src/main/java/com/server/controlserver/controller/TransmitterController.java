@@ -24,6 +24,8 @@ public class TransmitterController {
         return result;
     }
 
+/*  ***************일단 API들 다 메소드 없이 Mapping만 해놔서 오류뜨니까 다 주석처리했다요
+
     //  *******Service(User)*********
 
     // 사용자 추가
@@ -80,4 +82,6 @@ public class TransmitterController {
     @GetMapping("/api/walkRoad/{walkId}")
 
     // 산책 삭제가 있으니까 산책로 만 삭제하는건 없어도되는거 같기도하고
+
+ */
 }
