@@ -6,6 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class TransmitterService {
@@ -17,8 +19,14 @@ public class TransmitterService {
     }
 
     public Long save(GPS gps) {
+
         gpsRepository.save(gps);
 
         return gps.getId();
+    }
+
+    public Optional<GPS> getLocation(int id) {
+        GPS gps = gpsRepository.findLatest(1).get();
+        return Optional.ofNullable(gps);
     }
 }
