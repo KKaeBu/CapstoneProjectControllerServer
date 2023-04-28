@@ -21,8 +21,8 @@ public class User {
     private String name; //이름
     @Column(nullable = false)
     private String address; //주소
-    @Column(nullable = false)
-    private String ID; //아이디
+    @Column(name = "user_id", nullable = false)
+    private String userId; //아이디
     @Column(nullable = false)
     private String password; //비밀번호
     @Column(nullable = false)

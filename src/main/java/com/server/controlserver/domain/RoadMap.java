@@ -3,6 +3,8 @@ package com.server.controlserver.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -17,5 +19,7 @@ public class RoadMap {
     @Column()
     private String roadMapName; //산책로이름
     @Column(nullable = false)
-    private Ping pingList; //핑리스트
+    @OneToMany()
+    @JoinColumn(name = "ping_list")
+    private List<Ping> pingList; //핑리스트
 }

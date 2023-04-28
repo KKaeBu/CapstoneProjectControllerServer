@@ -26,7 +26,7 @@ public class Walk {
     @JoinColumn(name = "road_map_id")
     private RoadMap roadMapId;
     @OneToOne
-    @JoinColumn(name = "road_map_id")
+    @JoinColumn(name = "activity_id")
     private Activity activityId;
     @Column(name = "walk_date")
     private Date walkDate;

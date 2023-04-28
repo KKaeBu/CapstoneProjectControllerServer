@@ -1,7 +1,5 @@
 package com.server.controlserver.repository;
-
 import com.server.controlserver.domain.GPS;
-
 import java.util.Optional;
 
 public interface GPSRepository {
