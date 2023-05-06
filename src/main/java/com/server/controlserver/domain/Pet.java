@@ -32,7 +32,7 @@ public class Pet {
     @Column()
     private String species; //종
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id",nullable = false,referencedColumnName = "user_id")
+    @JoinColumn(name="user_id",nullable = false)
     private User user;
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "walk_id")

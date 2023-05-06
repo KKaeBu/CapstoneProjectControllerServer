@@ -3,10 +3,12 @@ package com.server.controlserver.repository;
 import com.server.controlserver.domain.Pet;
 import com.server.controlserver.domain.RoadMap;
 import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class JpaRoadMapRepository implements RoadMapRepository{
     EntityManager em;
 
