@@ -31,7 +31,10 @@ public class Pet {
     private Boolean isNeutered;//중성화 여부
     @Column()
     private String species; //종
-    @OneToMany
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="user_id",nullable = false,referencedColumnName = "user_id")
+    private User user;
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "walk_id")
     private List<Walk> walkId; //산책
     @Column(name = "create_time", nullable = false)

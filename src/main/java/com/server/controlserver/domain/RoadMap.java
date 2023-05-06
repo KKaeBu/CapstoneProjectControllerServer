@@ -19,7 +19,7 @@ public class RoadMap {
     @Column()
     private String roadMapName; //산책로이름
     @Column(nullable = false)
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ping_list")
     private List<Ping> pingList; //핑리스트
 }
