@@ -1,5 +1,6 @@
 package com.server.controlserver.repository;
 
+import com.server.controlserver.domain.Pet;
 import com.server.controlserver.domain.Ping;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -35,15 +36,9 @@ public class JpaPingRepository implements PingRepository{
     }
 
     @Override
-    public Optional<Ping> findByName(String name) {
-        List<Ping> result = em.createQuery("select p from Ping p where p.name = :name", Ping.class)
-                .setParameter("name", name)
-                .getResultList();
-        return result.stream().findAny();
-    }
-
-    @Override
     public List<Ping> findAll() {
-        return null;
+        List<Ping> result = em.createQuery("select p from Ping p", Ping.class)
+                .getResultList();
+        return result;
     }
 }
