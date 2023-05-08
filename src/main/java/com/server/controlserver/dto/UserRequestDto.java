@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Data
 @Builder
@@ -22,12 +23,13 @@ public class UserRequestDto {
     private String phone; //핸드폰번호
 
     public User toEntity(){
+        String salt = BCrypt.gensalt();
         return User.builder()
                 .userId(this.userId)
                 .name(this.name)
                 .address(this.address)
-//                .password(new BCryptPasswordEncoder(10).encode(this.password))
-                .password(this.password)
+                .password(BCrypt.hashpw(this.password, BCrypt.gensalt()))
+//                .password(this.password)
                 .phone(this.phone)
                 .build();
     }

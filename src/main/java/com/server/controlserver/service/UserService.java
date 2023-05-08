@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.server.controlserver.domain.User;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 
 @Service
 @Transactional
@@ -52,7 +53,7 @@ public class UserService {
 //            String claims = jwtProvider.parseJwtToken("Bearer "+ token); // 토큰 검증
 //            return token;
 
-        if(inputPassword.equals(user.getPassword())){
+        if(BCrypt.checkpw(inputPassword, user.getPassword())){
             String token = jwtProvider.createToken(user.getUserId());
             String claims = jwtProvider.parseJwtToken("Bearer "+ token); // 토큰 검증
             return token;
