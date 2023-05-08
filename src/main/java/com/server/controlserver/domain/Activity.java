@@ -14,10 +14,10 @@ public class Activity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column()
+    @Column(name = "walked_time")
     private String walkedTime; //산책시간
-    @Column()
+    @Column(name = "burned_calories")
     private int burnedCalories;//소모칼롤리
-    @Column()
+    @Column(name = "travel_distance")
     private float travelDistance;//산책거리
 }

@@ -16,7 +16,7 @@ public class TransmitterController {
     }
     //  ******gps******
 
-    // GPS정보 (위도,경도) 클라이언트 -> 서버 전달
+    // GPS정보 (위도,경도) 클라이언트 -> 서버 전달 (테스트용)
     @PostMapping("/api/gps")
     @ResponseBody
     public Long GPS(@RequestBody GPS gps) {
@@ -24,6 +24,7 @@ public class TransmitterController {
         return result;
     }
 
+    // GPS정보 (위도,경도) 서버 -> 클라이언트 전달
     @GetMapping("/api/gps")
     @ResponseBody
     public GPS getGPS() {

@@ -26,6 +26,7 @@ public class UserService {
         this.jwtProvider = jwtProvider;
     }
 
+    // 유저 회원가입
     public Long join(UserRequestDto userRequestDto){
         User user = userRequestDto.toEntity();
         validateDuplicateUser(user);
@@ -34,6 +35,7 @@ public class UserService {
         return user.getId();
     }
 
+    // 유저 로그인 (성공시 토큰 반환)
     public String Login(String inputUserId, String inputPassword){
         User user = userRepository.findByUserId(inputUserId).get();
 
@@ -42,17 +44,7 @@ public class UserService {
             return null;
         }
 
-        // Bcrypt 암호화
-//        String hashedPassword = user.getPassword();
-//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(bcryptStrength);
-//        System.out.println("Bcrypt 비밀번호 대조 결과: "+bCryptPasswordEncoder.matches(inputPassword,hashedPassword));
-
-        // 비밀번호가 맞다면
-//        if (bCryptPasswordEncoder.matches(inputPassword,hashedPassword)){
-//            String token = jwtProvider.createToken(user.getUserId());
-//            String claims = jwtProvider.parseJwtToken("Bearer "+ token); // 토큰 검증
-//            return token;
-
+        //Bcrypt 암호화
         if(BCrypt.checkpw(inputPassword, user.getPassword())){
             String token = jwtProvider.createToken(user.getUserId());
             String claims = jwtProvider.parseJwtToken("Bearer "+ token); // 토큰 검증

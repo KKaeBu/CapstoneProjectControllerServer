@@ -27,9 +27,9 @@ public class User {
     private String password; //비밀번호
     @Column(nullable = false)
     private String phone; //핸드폰번호
-//    @OneToOne
-//    @JoinColumn(name = "my_pet_id")
-//    private Pet myPetId;//사용자의 반려동물
+    @OneToOne
+    @JoinColumn(name = "my_pet")
+    private Pet myPet;//사용자의 반려동물
     @Column(name = "create_time", nullable = false)
     @CreationTimestamp
     private Date createTime; // default값으로 저장시간 자동으로 추가

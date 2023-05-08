@@ -25,14 +25,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    //    홈 화면
-    @GetMapping(value = {"", "/api", "/"})
-    @ResponseBody
-    public String home() {
-        System.out.println("접속.");
-        return "접속";
-    }
-
     // 사용자 추가
     @PostMapping("/api/users")
     @ResponseBody

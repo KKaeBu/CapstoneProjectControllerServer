@@ -27,16 +27,16 @@ public class Pet {
     private String sex; //성별
     @Column(nullable = false)
     private float weight; //몸무게
-    @Column()
+    @Column(name = "is_neutered")
     private Boolean isNeutered;//중성화 여부
     @Column()
     private String species; //종
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="user_id",nullable = false)
-    private User user;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @JoinColumn(name="user",nullable = false)
+//    private User user;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "walk_id")
-    private List<Walk> walkId; //산책
+    @JoinColumn(name = "walk_list")
+    private List<Walk> walkList; //산책
     @Column(name = "create_time", nullable = false)
     @CreationTimestamp
     private Date createTime; // default값으로 저장시간 자동으로 추가
