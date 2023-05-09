@@ -27,9 +27,9 @@ public class Pet {
     private String sex; //성별
     @Column(nullable = false)
     private float weight; //몸무게
-    @Column(name = "is_neutered")
-    private Boolean isNeutered;//중성화 여부
-    @Column()
+    @Column(name = "is_neutered", nullable = false)
+    private Boolean isNeutered;//중성화 여부 (true = 1, false = 0)
+    @Column(nullable = false)
     private String species; //종
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name="user",nullable = false)
