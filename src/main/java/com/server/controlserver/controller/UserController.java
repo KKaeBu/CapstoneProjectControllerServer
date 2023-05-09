@@ -30,7 +30,7 @@ public class UserController {
     // 사용자 추가
     @PostMapping("/api/users")
     @ResponseBody
-    public Long signup(UserRequestDto userRequestDto){
+    public Long signup(@RequestBody UserRequestDto userRequestDto){
         System.out.println(userRequestDto);
         Long result = userService.join(userRequestDto);
         return result;
