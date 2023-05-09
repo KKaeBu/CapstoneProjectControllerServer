@@ -25,7 +25,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    // 사용자 추가
+    // 사용자 추가 + 반려동물 추가 (일단 1대1 매칭)
     @PostMapping("/api/users")
     @ResponseBody
     public Long signup(UserRequestDto userRequestDto){

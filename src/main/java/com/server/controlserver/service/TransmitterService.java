@@ -25,7 +25,7 @@ public class TransmitterService {
     public Long save(GPS gps) {
 
         gpsRepository.save(gps); // 트래커의 현재 위치 저장
-        pingRepository.save(gps);
+//        pingRepository.save(gps);
 
         return gps.getId();
     }
