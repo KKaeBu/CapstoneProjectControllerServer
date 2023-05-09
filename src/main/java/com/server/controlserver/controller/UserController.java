@@ -1,5 +1,6 @@
 package com.server.controlserver.controller;
 
+import com.server.controlserver.domain.Pet;
 import com.server.controlserver.dto.LoginRequestDto;
 import com.server.controlserver.dto.PetRequestDto;
 import com.server.controlserver.dto.UserRequestDto;
@@ -10,9 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class UserController {
@@ -62,6 +61,13 @@ public class UserController {
         return result;
     }
 
+    // 사용자의 소유로 등록된 펫 찾기
+    @GetMapping("/api/users/{userId}/pets")
+    @ResponseBody
+    public Pet getPetInfo(@PathVariable("userId") String userId){
+        Pet pet = userService.findPetByUserId(userId);
+        return pet;
+    }
 
 
 /*  *******Service(User)*********

@@ -38,7 +38,7 @@ public class JpaPetRepository implements PetRepository{
         List<Pet> result = em.createQuery("select p from Pet p where p.name = :name", Pet.class)
                 .setParameter("name",name)
                 .getResultList();
-        return result.stream(   ).findAny();
+        return result.stream().findAny();
     } //이름으로 찾아서 반환
 
     @Override

@@ -34,26 +34,6 @@ public class TransmitterController {
 
 /*  ***************일단 API들 다 메소드 없이 Mapping만 해놔서 오류뜨니까 다 주석처리했다요
 
-    //  *******Service(User)*********
-
-    // 사용자 추가
-    @PostMapping("/api/users")
-
-    // 사용자 로그인
-    @PostMapping("/api/login")
-
-    // 특정 id 유저 삭제
-    @DeleteMapping("/api/users/{userId}") // need userId(PK)
-
-    // 특정 id를 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{userId}") // need userId(PK)
-
-    // 특정 사용자명을 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{userName}") //need userName(not null)
-
-    // 모든 유저의 정보 Get 요청
-    @GetMapping("/api/users")
-
     //  ********* 반려동물 정보 ********
 
     // 특정id 사용자의 반려동물 Get 요청
@@ -79,9 +59,6 @@ public class TransmitterController {
     // 산책 가져오기
     @GetMapping("/api/walk/{walkId}")
     @GetMapping("/api/pets/{petId}/walk/{walkId}")
-
-
-
 
     // 한 강아지의 산책목록 전부 가져오기
     @GetMapping("/api/pets/{petId}/walk")

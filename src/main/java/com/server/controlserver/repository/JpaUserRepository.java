@@ -50,7 +50,6 @@ public class JpaUserRepository implements UserRepository{
         return Optional.ofNullable(user);
     }
 
-
     @Override
     public List<User> findAll() {
         List<User> result = em.createQuery("select u from User u", User.class)

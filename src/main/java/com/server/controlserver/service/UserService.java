@@ -1,5 +1,6 @@
 package com.server.controlserver.service;
 
+import com.server.controlserver.domain.Pet;
 import com.server.controlserver.dto.LoginRequestDto;
 import com.server.controlserver.dto.UserRequestDto;
 import com.server.controlserver.repository.PetRepository;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.server.controlserver.domain.User;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.mindrot.jbcrypt.BCrypt;
+import com.server.controlserver.domain.User;
 
 @Service
 @Transactional
@@ -61,5 +63,10 @@ public class UserService {
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 회원입니다.");
                 });
+    }
+
+    public Pet findPetByUserId(String userId){
+        Pet pet = userRepository.findByUserId(userId).get().getMyPet();
+        return pet;
     }
 }
