@@ -3,6 +3,7 @@ package com.server.controlserver.controller;
 import com.server.controlserver.dto.LoginRequestDto;
 import com.server.controlserver.dto.PetRequestDto;
 import com.server.controlserver.dto.UserRequestDto;
+import com.server.controlserver.dto.UserResponseDto;
 import com.server.controlserver.service.PetService;
 import com.server.controlserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,9 @@ public class UserController {
     // 사용자 추가
     @PostMapping("/api/users")
     @ResponseBody
-    public Long signup(@RequestBody UserRequestDto userRequestDto){
+    public UserResponseDto signup(@RequestBody UserRequestDto userRequestDto){
         System.out.println(userRequestDto);
-        Long result = userService.join(userRequestDto);
+        UserResponseDto result = userService.join(userRequestDto);
         return result;
     }
 
@@ -54,13 +55,13 @@ public class UserController {
     /****************************** <펫> *****************************************/
 
     // 사용자가 기르는 강아지 등록 (1대1 매칭)
-    @PostMapping("/api/users/{userId}/pets")
-    @ResponseBody
-    public Long signup (PetRequestDto petRequestDto) {
-        System.out.println("petRequestDto: " + petRequestDto);
-        Long result = petService.join(petRequestDto);
-        return result;
-    }
+//    @PostMapping("/api/users/{userId}/pets")
+//    @ResponseBody
+//    public Long signup (PetRequestDto petRequestDto) {
+//        System.out.println("petRequestDto: " + petRequestDto);
+//        Long result = petService.join(petRequestDto);
+//        return result;
+//    }
 
 
 

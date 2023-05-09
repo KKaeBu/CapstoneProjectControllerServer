@@ -1,6 +1,7 @@
 package com.server.controlserver.controller;
 
 import com.server.controlserver.dto.PetRequestDto;
+import com.server.controlserver.dto.PetResponseDto;
 import com.server.controlserver.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,9 +22,11 @@ public class PetController {
     // 펫 추가
     @PostMapping("/api/pets")
     @ResponseBody
-    public Long signup (@RequestBody PetRequestDto petRequestDto) {
+    public PetResponseDto signup (@RequestBody PetRequestDto petRequestDto) {
         System.out.println("petRequestDto: " + petRequestDto);
-        Long result = petService.join(petRequestDto);
+        System.out.println("pet isNeutered: " + petRequestDto.getIsNeutered() + "\n" + "type = " + petRequestDto.getIsNeutered().getClass().getName());
+
+        PetResponseDto result = petService.join(petRequestDto);
         return result;
     }
 }
