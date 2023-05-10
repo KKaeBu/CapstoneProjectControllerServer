@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class TransmitterController {
-    private TransmitterService transmitterService;
+    private final TransmitterService transmitterService;
 
     @Autowired
     public TransmitterController(TransmitterService transmitterService) {
@@ -39,7 +39,7 @@ public class TransmitterController {
     // 특정id 사용자의 반려동물 Get 요청
     @GetMapping("/api/users/{userId}/pets") // need userId
 
-    // 특정 사용자의 발려동물 중 한 마리 Get 요청
+    // 특정 사용자의 반려동물 중 한 마리 Get 요청
     @GetMapping("/api/users/{userId}/pets/{petId}") // need userId & petId
 
     // 특정id 사용자의 반려동물 추가

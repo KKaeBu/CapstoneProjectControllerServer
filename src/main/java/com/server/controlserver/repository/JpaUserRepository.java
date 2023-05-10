@@ -1,6 +1,5 @@
 package com.server.controlserver.repository;
 
-import com.server.controlserver.domain.Pet;
 import com.server.controlserver.domain.User;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
@@ -25,6 +24,12 @@ public class JpaUserRepository implements UserRepository{
     @Override
     public User update(User user) {
         em.merge(user);
+        return user;
+    }
+
+    @Override
+    public User delete(User user){
+        em.remove(user);
         return user;
     }
 

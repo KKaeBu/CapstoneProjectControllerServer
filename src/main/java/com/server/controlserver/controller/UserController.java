@@ -1,6 +1,7 @@
 package com.server.controlserver.controller;
 
 import com.server.controlserver.domain.Pet;
+import com.server.controlserver.domain.User;
 import com.server.controlserver.dto.LoginRequestDto;
 import com.server.controlserver.dto.PetRequestDto;
 import com.server.controlserver.dto.UserRequestDto;
@@ -13,10 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 public class UserController {
-    private UserService userService;
-    private PetService petService;
+    private final UserService userService;
+    private final PetService petService;
 
     @Autowired
     public UserController(UserService userService, PetService petService) {
@@ -26,7 +29,7 @@ public class UserController {
 
     /****************************** <사용자> *****************************************/
 
-    // 사용자 추가
+    // User 추가
     @PostMapping("/api/users")
     @ResponseBody
     public Long signup(UserRequestDto userRequestDto){
@@ -35,7 +38,7 @@ public class UserController {
         return result;
     }
 
-    // 사용자 로그인
+    // User 로그인
     @PostMapping("/api/login")
     public ResponseEntity<HttpHeaders> Login(@RequestBody LoginRequestDto loginRequestDto) {
         String token = userService.Login(loginRequestDto.getUserId(), loginRequestDto.getPassword());
@@ -50,18 +53,49 @@ public class UserController {
         }
     }
 
+    // 특정 userId 가진 유저 정보 Get요청
+    @GetMapping("/api/users/{userId}") //need userId(not null)
+    public User findUserByUserId(@PathVariable("userId")String userId){
+        return userService.findByUserId(userId);
+    }
+
+    // 특정 Id를 가진 유저 정보 Get요청
+    @GetMapping("/api/users/{Id}") // need userId(PK)
+    public User findUserById(@PathVariable("Id")Long Id){
+        return userService.findById(Id);
+    }
+
+    // 특정 Name을 가진 유저 정보 Get요청
+    @GetMapping("/api/users/{Name}") //need userName(not null)
+    public User findUserByName(@PathVariable("Name")String Name){
+        return userService.findByName(Name);
+    }
+
+    // 모든 User 정보 Get 요청
+    @GetMapping("/api/users")
+    public List<User> findAllUser(){
+        return userService.findAllUser();
+    }
+
+    // 특정 userId 유저 삭제
+    @DeleteMapping("/api/users/{userId}") // need userId(PK)
+    public void removeUser(@PathVariable("userId")String userId){
+        User deleteduser = userService.deleteUser(userId);
+        System.out.println(deleteduser.getUserId()+"유저 삭제됨.");
+    }
+
     /****************************** <펫> *****************************************/
 
-    // 사용자가 기르는 강아지 등록 (1대1 매칭)
+    // 사용자가 기르는 반려동물 등록 (한 사용자당 반려동물 한 마리)
     @PostMapping("/api/users/{userId}/pets")
     @ResponseBody
-    public Long signup (PetRequestDto petRequestDto) {
+    public Long signup (PetRequestDto petRequestDto, @PathVariable String userId) {
         System.out.println("petRequestDto: " + petRequestDto);
         Long result = petService.join(petRequestDto);
         return result;
     }
 
-    // 사용자의 소유로 등록된 펫 찾기
+    // 사용자 반려동물 찾기
     @GetMapping("/api/users/{userId}/pets")
     @ResponseBody
     public Pet getPetInfo(@PathVariable("userId") String userId){
@@ -69,20 +103,9 @@ public class UserController {
         return pet;
     }
 
-
-/*  *******Service(User)*********
-
-    // 특정 id 유저 삭제
-    @DeleteMapping("/api/users/{userId}") // need userId(PK)
-
-    // 특정 id를 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{userId}") // need userId(PK)
-
-    // 특정 사용자명을 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{userName}") //need userName(not null)
-
-    // 모든 유저의 정보 Get 요청
-    @GetMapping("/api/users")
-
-    */
+    // 사용자의 반려동물 삭제
+    @DeleteMapping("/api/users/{userId}/pets")
+    public void removePet(@PathVariable("userId")String userId){
+        userService.deleteMyPet(userId);
+    }
 }

@@ -13,6 +13,9 @@ import com.server.controlserver.domain.User;
 import org.mindrot.jbcrypt.BCrypt;
 import com.server.controlserver.domain.User;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class UserService {
@@ -55,6 +58,34 @@ public class UserService {
             System.out.println("잘못된 비밀번호 입력됨.");
             return null;
         }
+    }
+
+    public User findByUserId(String userId){
+        return userRepository.findByUserId(userId).get();
+    }
+
+    public User findById(Long Id){
+        return userRepository.findById(Id).get();
+    }
+
+    public User findByName(String Name){
+        return userRepository.findByName(Name).get();
+    }
+
+    public User deleteUser(String userId){
+        User user = userRepository.findByUserId(userId).get();
+        return userRepository.delete(user);
+    }
+
+    public List<User> findAllUser(){
+        return userRepository.findAll();
+    }
+
+    public void deleteMyPet(String userId){
+        User user = userRepository.findByUserId(userId).get();
+        user.setMyPet(null);
+
+        userRepository.update(user);
     }
 
     /* 중복 user 조회 */
