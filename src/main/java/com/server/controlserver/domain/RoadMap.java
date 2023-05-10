@@ -18,7 +18,7 @@ public class RoadMap {
     private Long id;
     @Column()
     private String roadMapName; //산책로이름
-    @Column(nullable = false)
+//    @Column(nullable = false)
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "ping_list")
     private List<Ping> pingList; //핑리스트

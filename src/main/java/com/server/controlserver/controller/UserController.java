@@ -32,7 +32,7 @@ public class UserController {
     @PostMapping("/api/users")
     @ResponseBody
     public UserResponseDto signup(@RequestBody UserRequestDto userRequestDto){
-        System.out.println(userRequestDto);
+        System.out.println("userRequestDto: " + userRequestDto);
         UserResponseDto result = userService.join(userRequestDto);
         return result;
     }

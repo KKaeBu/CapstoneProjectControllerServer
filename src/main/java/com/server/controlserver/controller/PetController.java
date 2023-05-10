@@ -24,7 +24,6 @@ public class PetController {
     @ResponseBody
     public PetResponseDto signup (@RequestBody PetRequestDto petRequestDto) {
         System.out.println("petRequestDto: " + petRequestDto);
-        System.out.println("pet isNeutered: " + petRequestDto.getIsNeutered() + "\n" + "type = " + petRequestDto.getIsNeutered().getClass().getName());
 
         PetResponseDto result = petService.join(petRequestDto);
         return result;
