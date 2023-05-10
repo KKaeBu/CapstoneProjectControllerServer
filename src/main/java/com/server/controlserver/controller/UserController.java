@@ -54,25 +54,29 @@ public class UserController {
     }
 
     // 특정 userId 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{userId}") //need userId(not null)
+    @GetMapping("/api/users/userId/{userId}") //need userId(not null)
+    @ResponseBody
     public User findUserByUserId(@PathVariable("userId")String userId){
         return userService.findByUserId(userId);
     }
 
     // 특정 Id를 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{Id}") // need userId(PK)
+    @GetMapping("/api/users/Id/{Id}") // need userId(PK)
+    @ResponseBody
     public User findUserById(@PathVariable("Id")Long Id){
         return userService.findById(Id);
     }
 
     // 특정 Name을 가진 유저 정보 Get요청
-    @GetMapping("/api/users/{Name}") //need userName(not null)
+    @GetMapping("/api/users/Name/{Name}") //need userName(not null)
+    @ResponseBody
     public User findUserByName(@PathVariable("Name")String Name){
         return userService.findByName(Name);
     }
 
     // 모든 User 정보 Get 요청
     @GetMapping("/api/users")
+    @ResponseBody
     public List<User> findAllUser(){
         return userService.findAllUser();
     }

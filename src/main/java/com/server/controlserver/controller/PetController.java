@@ -28,8 +28,6 @@ public class PetController {
         return petService.join(petRequestDto);
     }
 
-    //  ********* 반려동물 정보 ********
-
     /*
      * 특정 id 사용자의 반려동물 Get 요청 > 근데 이거 일단 UserController 작성
      * 사용자의 반려동물을 불러오는 것이니 UserController에 있는것이 좋을 것 같아 UserController에 작성
@@ -41,9 +39,9 @@ public class PetController {
      *   현재는 각 사용자 간 한 마리의 반려동물을 가지도록 설정 했기때문에, 추후에 작성.
      */
 
-    // 특정id 사용자의 반려동물 추가 > Get요청과 마찬가지로 UserController에 작성
+    // * 특정id 사용자의 반려동물 추가 > Get요청과 마찬가지로 UserController에 작성
 
-    // 특정id 반려동물 전부 삭제 > 이것도 UserController에 작성
+    // * 특정id 반려동물 전부 삭제 > 이것도 UserController에 작성
 
     /* 특정id 반려동물 중 한 마리 삭제
      * 현재는 각 사용자 간 한 마리의 반려동물을 가지도록 설정 했기때문에, 추후에 작성.
