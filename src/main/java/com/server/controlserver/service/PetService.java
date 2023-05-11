@@ -3,6 +3,7 @@ package com.server.controlserver.service;
 import com.server.controlserver.domain.Pet;
 import com.server.controlserver.domain.User;
 import com.server.controlserver.dto.PetRequestDto;
+import com.server.controlserver.dto.PetResponseDto;
 import com.server.controlserver.dto.UserRequestDto;
 import com.server.controlserver.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,10 +31,11 @@ public class PetService {
     }
 
     // 펫 등록
-    public Long join(PetRequestDto petRequestDto){
+    public PetResponseDto join(PetRequestDto petRequestDto){
         Pet pet = petRequestDto.toEntity();
         petRepository.save(pet);
-        return pet.getId();
+        PetResponseDto petResponseDto = new PetResponseDto(pet.getId());
+        return petResponseDto;
     }
 
 }

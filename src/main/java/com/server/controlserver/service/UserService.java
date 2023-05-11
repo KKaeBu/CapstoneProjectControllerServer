@@ -3,6 +3,7 @@ package com.server.controlserver.service;
 import com.server.controlserver.domain.Pet;
 import com.server.controlserver.dto.LoginRequestDto;
 import com.server.controlserver.dto.UserRequestDto;
+import com.server.controlserver.dto.UserResponseDto;
 import com.server.controlserver.repository.PetRepository;
 import com.server.controlserver.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,13 @@ public class UserService {
     }
 
     // 유저 회원가입
-    public Long join(UserRequestDto userRequestDto){
+    public UserResponseDto join(UserRequestDto userRequestDto){
         User user = userRequestDto.toEntity();
         validateDuplicateUser(user);
 
         userRepository.save(user);
-        return user.getId();
+        UserResponseDto userResponseDto = new UserResponseDto(user.getId());
+        return userResponseDto;
     }
 
     // 유저 로그인 (성공시 토큰 반환)

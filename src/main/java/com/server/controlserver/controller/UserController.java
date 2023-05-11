@@ -2,9 +2,7 @@ package com.server.controlserver.controller;
 
 import com.server.controlserver.domain.Pet;
 import com.server.controlserver.domain.User;
-import com.server.controlserver.dto.LoginRequestDto;
-import com.server.controlserver.dto.PetRequestDto;
-import com.server.controlserver.dto.UserRequestDto;
+import com.server.controlserver.dto.*;
 import com.server.controlserver.service.PetService;
 import com.server.controlserver.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +30,9 @@ public class UserController {
     // User 추가
     @PostMapping("/api/users")
     @ResponseBody
-    public Long signup(UserRequestDto userRequestDto){
-        System.out.println(userRequestDto);
-        Long result = userService.join(userRequestDto);
+    public UserResponseDto signup(@RequestBody UserRequestDto userRequestDto){
+        System.out.println("userRequestDto: " + userRequestDto);
+        UserResponseDto result = userService.join(userRequestDto);
         return result;
     }
 
@@ -90,14 +88,24 @@ public class UserController {
 
     /****************************** <펫> *****************************************/
 
+
     // 사용자가 기르는 반려동물 등록 (한 사용자당 반려동물 한 마리)
     @PostMapping("/api/users/{userId}/pets")
     @ResponseBody
-    public Long signup (PetRequestDto petRequestDto, @PathVariable String userId) {
+    public PetResponseDto signup (PetRequestDto petRequestDto, @PathVariable String userId) {
         System.out.println("petRequestDto: " + petRequestDto);
-        Long result = petService.join(petRequestDto);
-        return result;
+        return petService.join(petRequestDto);
     }
+
+    // 사용자가 기르는 강아지 등록 (1대1 매칭)
+//    @PostMapping("/api/users/{userId}/pets")
+//    @ResponseBody
+//    public Long signup (PetRequestDto petRequestDto) {
+//        System.out.println("petRequestDto: " + petRequestDto);
+//        Long result = petService.join(petRequestDto);
+//        return result;
+//    }
+
 
     // 사용자 반려동물 찾기
     @GetMapping("/api/users/{userId}/pets")

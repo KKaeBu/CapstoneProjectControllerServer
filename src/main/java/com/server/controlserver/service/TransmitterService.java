@@ -1,12 +1,14 @@
 package com.server.controlserver.service;
 
 import com.server.controlserver.domain.GPS;
+import com.server.controlserver.domain.Ping;
 import com.server.controlserver.repository.GPSRepository;
 import com.server.controlserver.repository.PingRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -14,6 +16,8 @@ import java.util.Optional;
 public class TransmitterService {
     private GPSRepository gpsRepository; // 실시간 트래커 위치 정보 저장 db
     private PingRepository pingRepository; // 산책시 트래커 위치 정보 기록 db
+
+    private static ArrayList<Ping> pingList = null;
 
     @Autowired
     public TransmitterService(GPSRepository gpsRepository, PingRepository pingRepository) {
