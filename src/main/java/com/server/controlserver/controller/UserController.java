@@ -39,6 +39,7 @@ public class UserController {
     // User 로그인
     @PostMapping("/api/login")
     public ResponseEntity<HttpHeaders> Login(@RequestBody LoginRequestDto loginRequestDto) {
+        System.out.println("loginData: " + loginRequestDto);
         String token = userService.Login(loginRequestDto.getUserId(), loginRequestDto.getPassword());
 
         HttpHeaders httpHeaders = new HttpHeaders();
