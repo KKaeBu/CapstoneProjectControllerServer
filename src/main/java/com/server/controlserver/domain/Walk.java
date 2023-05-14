@@ -16,6 +16,9 @@ public class Walk {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "start_point")
     private Ping startPoint;

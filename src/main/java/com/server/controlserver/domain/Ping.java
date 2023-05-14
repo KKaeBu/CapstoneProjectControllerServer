@@ -17,6 +17,9 @@ public class Ping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "road_map_id")
+    private RoadMap roadMap;
     @Column(nullable = false)
     private double latitude; //위도
     @Column(nullable = false)

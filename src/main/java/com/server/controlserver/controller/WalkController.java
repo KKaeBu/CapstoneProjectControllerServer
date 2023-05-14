@@ -1,8 +1,16 @@
 package com.server.controlserver.controller;
 
+import com.server.controlserver.dto.PingRquestDto;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class WalkController {
@@ -13,6 +21,7 @@ public class WalkController {
     public WalkController(WalkService walkService) {
         this.walkService = walkService;
     }
+
 
     /* ******** 산책 **********
 

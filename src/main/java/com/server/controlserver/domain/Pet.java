@@ -34,8 +34,9 @@ public class Pet {
 //    @OneToOne(cascade = CascadeType.ALL)
 //    @JoinColumn(name="user",nullable = false)
 //    private User user;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "walk_list")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")
+    @Column(name = "walk_tb")
+//    @JoinColumn(name = "walk_list")
     private List<Walk> walkList; //산책
     @Column(name = "create_time", nullable = false)
     @CreationTimestamp

@@ -3,6 +3,7 @@ package com.server.controlserver.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -16,10 +17,9 @@ public class RoadMap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column()
+    @Column(name = "road_map_name")
     private String roadMapName; //산책로이름
-//    @Column(nullable = false)
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "ping_list")
-    private List<Ping> pingList; //핑리스트
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "roadMap")
+    @Column(name = "ping_list")
+    private List<Ping> pingList = new ArrayList<Ping>(); //핑리스트
 }
