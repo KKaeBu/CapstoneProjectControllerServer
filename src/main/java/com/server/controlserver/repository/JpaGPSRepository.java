@@ -29,8 +29,9 @@ public class JpaGPSRepository implements GPSRepository{
     }
 
     @Override
-    public Optional<GPS> findLatest(int id) {
-        GPS gps = em.find(GPS.class, id);
+    public Optional<GPS> findLatest() {
+        GPS gps = em.createQuery("select g from GPS g where g.createTime = (select MAX(g2.createTime) from GPS g2)", GPS.class)
+                .getSingleResult();
         return Optional.ofNullable(gps);
     }
 }

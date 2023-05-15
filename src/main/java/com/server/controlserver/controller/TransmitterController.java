@@ -52,7 +52,7 @@ public class TransmitterController {
     @GetMapping("/api/gps")
     @ResponseBody
     public ResponseEntity<GPS> getGPS() {
-        GPS gps = transmitterService.getLocation(1).get();
+        GPS gps = transmitterService.getLocation().get();
         return new ResponseEntity<GPS>(gps,HttpStatus.OK);
     }
 

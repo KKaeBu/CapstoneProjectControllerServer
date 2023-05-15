@@ -36,8 +36,8 @@ public class TransmitterService {
     }
 
     // 저장된 트래커의 위치 정보 가져오기
-    public Optional<GPS> getLocation(int id) {
-        GPS gps = gpsRepository.findLatest(1).get();
+    public Optional<GPS> getLocation() {
+        GPS gps = gpsRepository.findLatest().get();
         return Optional.ofNullable(gps);
     }
 }
