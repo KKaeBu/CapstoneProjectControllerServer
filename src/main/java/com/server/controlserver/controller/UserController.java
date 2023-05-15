@@ -5,6 +5,7 @@ import com.server.controlserver.domain.User;
 import com.server.controlserver.dto.*;
 import com.server.controlserver.service.PetService;
 import com.server.controlserver.service.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,10 +31,10 @@ public class UserController {
     // User 추가
     @PostMapping("/api/users")
     @ResponseBody
-    public UserResponseDto signup(@RequestBody UserRequestDto userRequestDto){
+    public ResponseEntity<UserResponseDto> signup(@RequestBody UserRequestDto userRequestDto){
         System.out.println("userRequestDto: " + userRequestDto);
         UserResponseDto result = userService.join(userRequestDto);
-        return result;
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
     // User 로그인
@@ -56,36 +57,37 @@ public class UserController {
     // 특정 userId 가진 유저 정보 Get요청
     @GetMapping("/api/users/userId/{userId}") //need userId(not null)
     @ResponseBody
-    public User findUserByUserId(@PathVariable("userId")String userId){
-        return userService.findByUserId(userId);
+    public ResponseEntity<UserResponseDto> findUserByUserId(@PathVariable("userId")String userId){
+        return new ResponseEntity<UserResponseDto>(userService.findByUserId(userId),HttpStatus.OK);
     }
 
     // 특정 Id를 가진 유저 정보 Get요청
     @GetMapping("/api/users/Id/{Id}") // need userId(PK)
     @ResponseBody
-    public User findUserById(@PathVariable("Id")Long Id){
-        return userService.findById(Id);
+    public ResponseEntity<UserResponseDto> findUserById(@PathVariable("Id")Long Id){
+        return new ResponseEntity<UserResponseDto>(userService.findById(Id),HttpStatus.OK);
     }
 
     // 특정 Name을 가진 유저 정보 Get요청
     @GetMapping("/api/users/Name/{Name}") //need userName(not null)
     @ResponseBody
-    public User findUserByName(@PathVariable("Name")String Name){
-        return userService.findByName(Name);
+    public ResponseEntity<UserResponseDto> findUserByName(@PathVariable("Name")String Name){
+        return new ResponseEntity<UserResponseDto>(userService.findByName(Name),HttpStatus.OK);
     }
 
     // 모든 User 정보 Get 요청
     @GetMapping("/api/users")
     @ResponseBody
-    public List<User> findAllUser(){
-        return userService.findAllUser();
+    public ResponseEntity<List<UserResponseDto>> findAllUser(){
+        return new ResponseEntity<List<UserResponseDto>>(userService.findAllUser(),HttpStatus.OK);
     }
 
     // 특정 userId 유저 삭제
     @DeleteMapping("/api/users/{userId}") // need userId(PK)
-    public void removeUser(@PathVariable("userId")String userId){
+    public ResponseEntity<String> removeUser(@PathVariable("userId")String userId){
         User deleteduser = userService.deleteUser(userId);
         System.out.println(deleteduser.getUserId()+"유저 삭제됨.");
+        return new ResponseEntity<String>("성공적으로 유저가 삭제되었습니다.",HttpStatus.OK);
     }
 
     /****************************** <펫> *****************************************/
@@ -94,9 +96,9 @@ public class UserController {
     // 사용자가 기르는 반려동물 등록 (한 사용자당 반려동물 한 마리)
     @PostMapping("/api/users/{userId}/pets")
     @ResponseBody
-    public PetResponseDto signup (PetRequestDto petRequestDto, @PathVariable String userId) {
+    public ResponseEntity<PetResponseDto> signup (PetRequestDto petRequestDto, @PathVariable String userId) {
         System.out.println("petRequestDto: " + petRequestDto);
-        return petService.join(petRequestDto);
+        return new ResponseEntity<PetResponseDto>(petService.join(petRequestDto),HttpStatus.OK);
     }
 
     // 사용자가 기르는 강아지 등록 (1대1 매칭)
@@ -112,14 +114,13 @@ public class UserController {
     // 사용자 반려동물 찾기
     @GetMapping("/api/users/{userId}/pets")
     @ResponseBody
-    public Pet getPetInfo(@PathVariable("userId") String userId){
-        Pet pet = userService.findPetByUserId(userId);
-        return pet;
+    public ResponseEntity<PetResponseDto> getPetInfo(@PathVariable("userId") String userId){
+        return new ResponseEntity<PetResponseDto>(userService.findPetByUserId(userId),HttpStatus.OK);
     }
 
     // 사용자의 반려동물 삭제
     @DeleteMapping("/api/users/{userId}/pets")
-    public void removePet(@PathVariable("userId")String userId){
-        userService.deleteMyPet(userId);
+    public ResponseEntity<String> removePet(@PathVariable("userId")String userId){
+        return new ResponseEntity<String>(userService.deleteMyPet(userId),HttpStatus.OK);
     }
 }

@@ -5,6 +5,8 @@ import com.server.controlserver.dto.PetRequestDto;
 import com.server.controlserver.dto.PetResponseDto;
 import com.server.controlserver.service.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,9 +27,10 @@ public class PetController {
     // Pet 추가
     @PostMapping("/api/pets")
     @ResponseBody
-    public PetResponseDto signup (@RequestBody PetRequestDto petRequestDto) {
+    public ResponseEntity<PetResponseDto> signup (@RequestBody PetRequestDto petRequestDto) {
         System.out.println("petRequestDto: " + petRequestDto);
-        return petService.join(petRequestDto);
+        PetResponseDto newPet = petService.join(petRequestDto);
+        return new ResponseEntity<PetResponseDto>(newPet, HttpStatus.CREATED);
     }
 
     /*

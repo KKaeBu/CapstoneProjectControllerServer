@@ -7,6 +7,7 @@ import com.server.controlserver.dto.PingRquestDto;
 import com.server.controlserver.service.TransmitterService;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +19,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Controller
 public class TransmitterController {
     private final TransmitterService transmitterService;
-    private WalkService walkService;
-    private ConcurrentHashMap<String, List<PingRquestDto>> pingList;
+    private final WalkService walkService;
+    private final ConcurrentHashMap<String, List<PingRquestDto>> pingList;
 
     @Autowired
     public TransmitterController(TransmitterService transmitterService, WalkService walkService) {
@@ -33,7 +34,7 @@ public class TransmitterController {
     // GPS정보 (위도,경도) 클라이언트 -> 서버 전달 (테스트용)
     @PostMapping("/api/gps")
     @ResponseBody
-    public Long GPS(@RequestBody PingRquestDto pingRquestDto) {
+    public ResponseEntity<Long> GPS(@RequestBody PingRquestDto pingRquestDto) {
         System.out.println("pingRequest: " + pingRquestDto);
         String key = "ping_list";
 
@@ -44,15 +45,15 @@ public class TransmitterController {
         pingList.put(key, pl);
 
         Long result = transmitterService.save(pingRquestDto);
-        return result;
+        return new ResponseEntity<Long>(result, HttpStatus.OK);
     }
 
     // GPS정보 (위도,경도) 서버 -> 클라이언트 전달
     @GetMapping("/api/gps")
     @ResponseBody
-    public GPS getGPS() {
+    public ResponseEntity<GPS> getGPS() {
         GPS gps = transmitterService.getLocation(1).get();
-        return gps;
+        return new ResponseEntity<GPS>(gps,HttpStatus.OK);
     }
 
     @PostMapping("/api/end")

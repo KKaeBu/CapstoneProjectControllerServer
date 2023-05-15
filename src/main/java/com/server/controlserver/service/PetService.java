@@ -34,8 +34,15 @@ public class PetService {
     public PetResponseDto join(PetRequestDto petRequestDto){
         Pet pet = petRequestDto.toEntity();
         petRepository.save(pet);
-        PetResponseDto petResponseDto = new PetResponseDto(pet.getId());
-        return petResponseDto;
+        return new PetResponseDto(
+                pet.getName(),
+                pet.getAge(),
+                pet.getSex(),
+                pet.getWeight(),
+                pet.getIsNeutered(),
+                pet.getSpecies(),
+                pet.getWalkList(),
+                pet.getCreateTime());
     }
 
 }

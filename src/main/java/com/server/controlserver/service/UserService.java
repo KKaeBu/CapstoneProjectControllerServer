@@ -2,6 +2,7 @@ package com.server.controlserver.service;
 
 import com.server.controlserver.domain.Pet;
 import com.server.controlserver.dto.LoginRequestDto;
+import com.server.controlserver.dto.PetResponseDto;
 import com.server.controlserver.dto.UserRequestDto;
 import com.server.controlserver.dto.UserResponseDto;
 import com.server.controlserver.repository.PetRepository;
@@ -14,6 +15,7 @@ import com.server.controlserver.domain.User;
 import org.mindrot.jbcrypt.BCrypt;
 import com.server.controlserver.domain.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,8 +40,14 @@ public class UserService {
         validateDuplicateUser(user);
 
         userRepository.save(user);
-        UserResponseDto userResponseDto = new UserResponseDto(user.getId());
-        return userResponseDto;
+        return new UserResponseDto(
+                user.getName(),
+                user.getAddress(),
+                user.getUserId(),
+                user.getPhone(),
+                user.getMyPet(),
+                user.getCreateTime()
+        );
     }
 
     // 유저 로그인 (성공시 토큰 반환)
@@ -62,16 +70,59 @@ public class UserService {
         }
     }
 
-    public User findByUserId(String userId){
-        return userRepository.findByUserId(userId).get();
+    public UserResponseDto findByUserId(String userId){
+        User user = userRepository.findByUserId(userId).get();
+        return new UserResponseDto(
+                user.getName(),
+                user.getAddress(),
+                user.getUserId(),
+                user.getPhone(),
+                user.getMyPet(),
+                user.getCreateTime()
+        );
     }
 
-    public User findById(Long Id){
-        return userRepository.findById(Id).get();
+    public UserResponseDto findById(Long Id){
+        User user = userRepository.findById(Id).get();
+        return new UserResponseDto(
+                user.getName(),
+                user.getAddress(),
+                user.getUserId(),
+                user.getPhone(),
+                user.getMyPet(),
+                user.getCreateTime()
+        );
     }
 
-    public User findByName(String Name){
-        return userRepository.findByName(Name).get();
+    public UserResponseDto findByName(String Name){
+        User user = userRepository.findByName(Name).get();
+        return new UserResponseDto(
+                user.getName(),
+                user.getAddress(),
+                user.getUserId(),
+                user.getPhone(),
+                user.getMyPet(),
+                user.getCreateTime()
+        );
+    }
+
+    public List<UserResponseDto> findAllUser(){
+        List<User> userList = userRepository.findAll();
+        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
+
+        for(User u : userList) {
+            userResponseDtoList
+                    .add(new UserResponseDto(
+                            u.getName(),
+                            u.getAddress(),
+                            u.getUserId(),
+                            u.getPhone(),
+                            u.getMyPet(),
+                            u.getCreateTime()
+                        )
+                    );
+        }
+        return userResponseDtoList;
     }
 
     public User deleteUser(String userId){
@@ -79,15 +130,29 @@ public class UserService {
         return userRepository.delete(user);
     }
 
-    public List<User> findAllUser(){
-        return userRepository.findAll();
+    public PetResponseDto findPetByUserId(String userId){
+        Pet pet = userRepository.findByUserId(userId).get().getMyPet();
+        return new PetResponseDto(
+                pet.getName(),
+                pet.getAge(),
+                pet.getSex(),
+                pet.getWeight(),
+                pet.getIsNeutered(),
+                pet.getSpecies(),
+                pet.getWalkList(),
+                pet.getCreateTime());
     }
 
-    public void deleteMyPet(String userId){
+    public String deleteMyPet(String userId){
         User user = userRepository.findByUserId(userId).get();
-        user.setMyPet(null);
 
-        userRepository.update(user);
+        if(user.getUserId() != null){
+            user.setMyPet(null);
+            userRepository.update(user);
+            return "등록된 반려동물 삭제에 성공했습니다.";
+        }else{
+            return "반려동물 삭제 실패.";
+        }
     }
 
     /* 중복 user 조회 */
@@ -96,10 +161,5 @@ public class UserService {
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 회원입니다.");
                 });
-    }
-
-    public Pet findPetByUserId(String userId){
-        Pet pet = userRepository.findByUserId(userId).get().getMyPet();
-        return pet;
     }
 }
