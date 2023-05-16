@@ -32,5 +32,5 @@ public class Walk {
     @JoinColumn(name = "activity")
     private Activity activity;
     @Column(name = "walk_date")
-    private Date walkDate;
+    private String walkDate;
 }
