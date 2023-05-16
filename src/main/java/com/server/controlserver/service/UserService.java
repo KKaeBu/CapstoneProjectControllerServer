@@ -36,7 +36,8 @@ public class UserService {
 
     // 유저 회원가입
     public UserResponseDto join(UserRequestDto userRequestDto){
-        User user = userRequestDto.toEntity();
+        Pet pet = userRequestDto.toPetEntity();
+        User user = userRequestDto.toUserEntity(pet);
         validateDuplicateUser(user);
 
         userRepository.save(user);
