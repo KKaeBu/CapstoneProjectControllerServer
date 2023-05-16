@@ -15,7 +15,7 @@ public class Activity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "walked_time")
-    private String walkedTime; //산책시간
+    private long walkedTime; //산책시간
     @Column(name = "burned_calories")
     private int burnedCalories;//소모칼롤리
     @Column(name = "travel_distance")

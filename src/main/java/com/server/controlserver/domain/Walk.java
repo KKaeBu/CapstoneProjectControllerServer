@@ -26,11 +26,11 @@ public class Walk {
     @JoinColumn(name = "end_point")
     private Ping endPoint;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "road_map_id")
-    private RoadMap roadMapId;
+    @JoinColumn(name = "road_map")
+    private RoadMap roadMap;
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "activity_id")
-    private Activity activityId;
+    @JoinColumn(name = "activity")
+    private Activity activity;
     @Column(name = "walk_date")
-    private Date walkDate;
+    private String walkDate;
 }
