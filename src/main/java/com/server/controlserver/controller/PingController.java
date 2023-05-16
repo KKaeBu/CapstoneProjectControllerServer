@@ -1,6 +1,6 @@
 package com.server.controlserver.controller;
 
-import com.server.controlserver.dto.PingRquestDto;
+import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +17,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PingController {
     private TransmitterController transmitterController;
     private WalkService walkService;
-    private ConcurrentHashMap<String, List<PingRquestDto>> pingList;
-
     @Autowired
     public PingController(TransmitterController transmitterController, WalkService walkService) {
         this.transmitterController = transmitterController;
         this.walkService = walkService;
-        this.pingList = new ConcurrentHashMap<>();
     }
 
     // GPS정보 (위도,경도) ping 저장
     @PostMapping("/api/pings")
     @ResponseBody
-    public ResponseEntity<?> Ping(@RequestBody PingRquestDto pingRquestDto) {
-        System.out.println("pingRequest: " + pingRquestDto);
-        String key = "ping_list";
-
-        List<PingRquestDto> pl = pingList.getOrDefault(key, new ArrayList<>());
-
-        pl.add(pingRquestDto);
-
-        pingList.put(key, pl);
+    public ResponseEntity<?> Ping(@RequestBody PingRequestDto pingRquestDto) {
 
         return ResponseEntity.ok().build();
     }

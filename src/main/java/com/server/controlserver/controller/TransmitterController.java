@@ -3,7 +3,7 @@ package com.server.controlserver.controller;
 import com.server.controlserver.domain.GPS;
 import com.server.controlserver.domain.RoadMap;
 import com.server.controlserver.dto.ActivityRequestDto;
-import com.server.controlserver.dto.PingRquestDto;
+import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.service.TransmitterService;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,30 +20,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class TransmitterController {
     private final TransmitterService transmitterService;
     private final WalkService walkService;
-    private final ConcurrentHashMap<String, List<PingRquestDto>> pingList;
 
     @Autowired
     public TransmitterController(TransmitterService transmitterService, WalkService walkService) {
         this.transmitterService = transmitterService;
         this.walkService = walkService;
-        this.pingList = new ConcurrentHashMap<>();
-
     }
     //  ******gps******
 
     // GPS정보 (위도,경도) 클라이언트 -> 서버 전달 (테스트용)
     @PostMapping("/api/gps")
     @ResponseBody
-    public ResponseEntity<Long> GPS(@RequestBody PingRquestDto pingRquestDto) {
-        System.out.println("pingRequest: " + pingRquestDto);
-        String key = "ping_list";
-
-        List<PingRquestDto> pl = pingList.getOrDefault(key, new ArrayList<>());
-
-        pl.add(pingRquestDto);
-
-        pingList.put(key, pl);
-
+    public ResponseEntity<Long> GPS(@RequestBody PingRequestDto pingRquestDto) {
         Long result = transmitterService.save(pingRquestDto);
         return new ResponseEntity<Long>(result, HttpStatus.OK);
     }
@@ -54,14 +42,5 @@ public class TransmitterController {
     public ResponseEntity<GPS> getGPS() {
         GPS gps = transmitterService.getLocation().get();
         return new ResponseEntity<GPS>(gps,HttpStatus.OK);
-    }
-
-    @PostMapping("/api/end")
-    @ResponseBody
-    public RoadMap endOfWalk(@RequestBody ActivityRequestDto activityRequestDto) {
-        System.out.println("activity: " + activityRequestDto);
-        RoadMap roadMap = walkService.endOfWalk(activityRequestDto, pingList);
-        System.out.println("roadMap: " + roadMap);
-        return roadMap;
     }
 }

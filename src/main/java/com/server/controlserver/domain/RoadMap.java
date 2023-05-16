@@ -1,5 +1,6 @@
 package com.server.controlserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,7 @@ public class RoadMap {
     @Column(name = "road_map_name")
     private String roadMapName; //산책로이름
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "roadMap")
+    @JsonManagedReference
     @Column(name = "ping_list")
-    private List<Ping> pingList = new ArrayList<Ping>(); //핑리스트
+    private List<Ping> pingList; //핑리스트
 }

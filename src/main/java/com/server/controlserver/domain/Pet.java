@@ -1,5 +1,6 @@
 package com.server.controlserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -31,12 +32,9 @@ public class Pet {
     private Boolean isNeutered;//중성화 여부 (true = 1, false = 0)
     @Column(nullable = false)
     private String species; //종
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name="user",nullable = false)
-//    private User user;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "pet")
-    @Column(name = "walk_tb")
-//    @JoinColumn(name = "walk_list")
+    @JsonManagedReference
+    @Column(name = "walk_list")
     private List<Walk> walkList; //산책
     @Column(name = "create_time", nullable = false)
     @CreationTimestamp

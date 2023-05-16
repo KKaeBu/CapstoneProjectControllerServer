@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PingRepository {
-    RoadMap save(List<Ping> ping); // 펫 저장
-    Ping update(Ping ping); // 회원 업데이트
+    Ping savePing(Ping ping); // 핑 저장
+    RoadMap saveRoadMapPingList(RoadMap roadMap, List<Ping> pingList); // 핑 리스트 저장
+    Ping update(Ping ping); // 핑 업데이트
     Optional<Ping> findById(Long id); //id로 찾아서 반환
-    List<Ping> findAll(); //모든 회원 반환
+    List<Ping> findAll(); //모든 핑 반환
 }

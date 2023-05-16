@@ -2,7 +2,7 @@ package com.server.controlserver.service;
 
 import com.server.controlserver.domain.GPS;
 import com.server.controlserver.domain.Ping;
-import com.server.controlserver.dto.PingRquestDto;
+import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.repository.GPSRepository;
 import com.server.controlserver.repository.PingRepository;
 import jakarta.transaction.Transactional;
@@ -27,8 +27,8 @@ public class TransmitterService {
     }
 
     // 현재 트래커의 위치 저장
-    public Long save(PingRquestDto pingRquestDto) {
-        GPS gps = pingRquestDto.toEntityGPS();
+    public Long save(PingRequestDto pingRquestDto) {
+        GPS gps = pingRquestDto.toGPSEntity();
         gpsRepository.save(gps); // 트래커의 현재 위치 저장
 //        pingRepository.save(gps);
 

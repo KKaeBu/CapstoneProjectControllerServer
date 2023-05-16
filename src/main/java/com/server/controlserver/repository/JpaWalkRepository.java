@@ -1,10 +1,13 @@
 package com.server.controlserver.repository;
 
 import com.server.controlserver.domain.Pet;
+import com.server.controlserver.domain.Ping;
+import com.server.controlserver.domain.RoadMap;
 import com.server.controlserver.domain.Walk;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,7 +20,10 @@ public class JpaWalkRepository implements WalkRepository{
     }
 
     @Override
-    public Walk save(Walk walk) {
+    public Walk save(Walk walk, Pet pet) {
+        // Walk 저장
+        walk.setPet(pet);
+        walk.getPet().getWalkList().add(walk);
         em.persist(walk);
         return walk;
     }

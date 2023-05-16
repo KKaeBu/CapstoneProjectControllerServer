@@ -13,25 +13,29 @@ import java.util.Optional;
 public class JpaPingRepository implements PingRepository{
 
     private final EntityManager em;
-    private RoadMapRepository roadMapRepository;
 
     @Autowired
-    public JpaPingRepository(EntityManager em, RoadMapRepository roadMapRepository) {
+    public JpaPingRepository(EntityManager em) {
         this.em = em;
-        this.roadMapRepository = roadMapRepository;
     }
 
     @Override
-    public RoadMap save(List<Ping> pingList) {
-        RoadMap roadMap = new RoadMap();
-        roadMap.setRoadMapName("testRoadMapName");
-        em.persist(roadMap);
-//        roadMapRepository.save(roadMap);
+    public Ping savePing(Ping ping) {
+        em.persist(ping);
+        return ping;
+    }
 
-        for(Ping ping : pingList){
+    @Override
+    public RoadMap saveRoadMapPingList(RoadMap roadMap, List<Ping> pingList) {
+        // RoadMap 저장
+        em.persist(roadMap);
+
+        System.out.println("pingList: " + pingList);
+        // Ping 저장
+        for(Ping ping: pingList) {
+            // 각 핑이 어떤 RoadMap 핑인지를 명시
             ping.setRoadMap(roadMap);
-            // 로드맵의 핑리스트에 핑을 추가해주지 않으면
-            // 로드맵에서 핑리스트에 핑이 참조가 되지 않음 (양방향 통신을 위해)
+            // RoadMap에도 어떤 핑이 들어가는지를 명시
             ping.getRoadMap().getPingList().add(ping);
             em.persist(ping);
         }
