@@ -3,6 +3,7 @@ package com.server.controlserver.service;
 import com.server.controlserver.domain.*;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
+import com.server.controlserver.dto.WalkResponseDto;
 import com.server.controlserver.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class WalkService {
         this.petRepository = petRepository;
     }
 
-    public Walk walkOver(WalkRequestDto walkRequestDto, String key, ConcurrentHashMap<String, List<PingRequestDto>> pingList, Long petId) {
+    public WalkResponseDto walkOver(WalkRequestDto walkRequestDto, String key, ConcurrentHashMap<String, List<PingRequestDto>> pingList, Long petId) {
         //Activity 저장
         Activity activity = walkRequestDto.toActivityEntity();
         activityRepository.save(activity);
@@ -69,8 +70,17 @@ public class WalkService {
         //데이터 할당 청소
         pl.clear();
 
+        WalkResponseDto walkResponseDto = new WalkResponseDto(
+                result.getPet(),
+                result.getStartPoint(),
+                result.getEndPoint(),
+                result.getRoadMap(),
+                result.getActivity(),
+                result.getWalkDate()
+        );
 
-        return result;
+
+        return walkResponseDto;
     }
 
     public List<Walk> findAllByPetId(Long petId){

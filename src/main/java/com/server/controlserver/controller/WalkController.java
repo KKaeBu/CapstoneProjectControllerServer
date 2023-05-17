@@ -4,6 +4,7 @@ import com.server.controlserver.domain.RoadMap;
 import com.server.controlserver.domain.Walk;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
+import com.server.controlserver.dto.WalkResponseDto;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class WalkController {
 
     @PostMapping("/api/pets/{petId}/walks")
     @ResponseBody
-    public ResponseEntity<Walk> walkEnd(@PathVariable Long petId, @RequestBody WalkRequestDto walkRequestDto) {
+    public ResponseEntity<WalkResponseDto> walkEnd(@PathVariable Long petId, @RequestBody WalkRequestDto walkRequestDto) {
         System.out.println("petId: " + petId);
         System.out.println("walkRequest: " + walkRequestDto);
         System.out.println("PingList: " + walkRequestDto.getPingList());
@@ -48,8 +49,8 @@ public class WalkController {
         // hashMap의 key: ping_list에 List: pl 값 저장
         pingList.put(key, pl);
 
-        Walk walk = walkService.walkOver(walkRequestDto, key, pingList, petId);
-        return new ResponseEntity<Walk>(walk, HttpStatus.OK);
+        WalkResponseDto walk = walkService.walkOver(walkRequestDto, key, pingList, petId);
+        return new ResponseEntity<WalkResponseDto>(walk, HttpStatus.OK);
     }
 
     // 특정 반려동물의 산책 모두 가져오기
