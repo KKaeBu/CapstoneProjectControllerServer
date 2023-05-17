@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -22,7 +23,7 @@ public class WalkRequestDto {
     private Double travelDistance;
     private int burnedCalories;
     private List<PingRequestDto> pingList;
-    private String walkDate;
+    private Date walkDate;
 
     public RoadMap toRoadMapEntity() {
         return RoadMap.builder()
