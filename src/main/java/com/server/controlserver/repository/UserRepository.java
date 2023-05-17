@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface UserRepository {
     User save(User user); // 펫 저장
     User update(User user); // 회원 업데이트
-
     User delete(User user);
 
     Optional<User> findById(Long id); //id로 찾아서 반환

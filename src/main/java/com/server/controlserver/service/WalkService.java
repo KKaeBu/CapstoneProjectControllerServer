@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -70,5 +71,37 @@ public class WalkService {
 
 
         return result;
+    }
+
+    public List<Walk> findAllByPetId(Long petId){
+        Pet pet = petRepository.findById(petId).get();
+        return pet.getWalkList();
+    }
+
+    public Optional<Walk> findById( Long walkId){
+        return walkRepository.findById(walkId);
+    }
+
+    public RoadMap findRoadMapById(Long walkId) { return walkRepository.findById(walkId).get().getRoadMap();}
+
+    public boolean deleteAll(Long petId){
+        Pet pet = petRepository.findById(petId).get();
+        if (pet.getId() != null){
+            pet.setWalkList(null);
+            petRepository.update(pet);
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean deleteWalk(Long walkId){
+        Walk walk = walkRepository.findById(walkId).get();
+        if(walk.getId()!=null){
+            walkRepository.delete(walk);
+            return true;
+        }else{
+            return false;
+        }
     }
 }

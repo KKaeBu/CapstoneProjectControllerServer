@@ -1,9 +1,6 @@
 package com.server.controlserver.repository;
 
-import com.server.controlserver.domain.Pet;
-import com.server.controlserver.domain.Ping;
-import com.server.controlserver.domain.RoadMap;
-import com.server.controlserver.domain.Walk;
+import com.server.controlserver.domain.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +28,12 @@ public class JpaWalkRepository implements WalkRepository{
     @Override
     public Walk update(Walk walk) {
         em.merge(walk);
+        return walk;
+    }
+
+    @Override
+    public Walk delete(Walk walk){
+        em.remove(walk);
         return walk;
     }
 
