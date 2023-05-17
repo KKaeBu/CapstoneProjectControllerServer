@@ -19,5 +19,5 @@ public class Activity {
     @Column(name = "burned_calories")
     private int burnedCalories;//소모칼롤리
     @Column(name = "travel_distance")
-    private float travelDistance;//산책거리
+    private Double travelDistance;//산책거리
 }

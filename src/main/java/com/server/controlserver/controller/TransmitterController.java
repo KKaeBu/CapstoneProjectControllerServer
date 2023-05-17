@@ -4,6 +4,7 @@ import com.server.controlserver.domain.GPS;
 import com.server.controlserver.domain.RoadMap;
 import com.server.controlserver.dto.ActivityRequestDto;
 import com.server.controlserver.dto.PingRequestDto;
+import com.server.controlserver.dto.UserResponseDto;
 import com.server.controlserver.service.TransmitterService;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,11 @@ public class TransmitterController {
     public ResponseEntity<GPS> getGPS() {
         GPS gps = transmitterService.getLocation().get();
         return new ResponseEntity<GPS>(gps,HttpStatus.OK);
+    }
+
+    @GetMapping("/api/gps/test")
+    @ResponseBody
+    public ResponseEntity<List<GPS>> getGpsList() {
+        return new ResponseEntity<List<GPS>>(transmitterService.getGpsList(),HttpStatus.OK);
     }
 }

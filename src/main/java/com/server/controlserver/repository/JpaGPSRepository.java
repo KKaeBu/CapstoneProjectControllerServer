@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -34,5 +35,12 @@ public class JpaGPSRepository implements GPSRepository{
         GPS gps = em.createQuery("select g from GPS g where g.createTime = (select MAX(g2.createTime) from GPS g2)", GPS.class)
                 .getSingleResult();
         return Optional.ofNullable(gps);
+    }
+
+    @Override
+    public List<GPS> findGpsList() {
+        List<GPS> gpsList = em.createQuery("select g from GPS g where g.id > 40", GPS.class)
+                .getResultList();
+        return gpsList;
     }
 }

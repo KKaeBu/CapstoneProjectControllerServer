@@ -30,7 +30,7 @@ public class WalkController {
         this.pingList = new ConcurrentHashMap<String, List<PingRequestDto>>();
     }
 
-    @PostMapping("/api/pets/{petId}/walk")
+    @PostMapping("/api/pets/{petId}/walks")
     @ResponseBody
     public ResponseEntity<Walk> walkEnd(@PathVariable Long petId, @RequestBody WalkRequestDto walkRequestDto) {
         System.out.println("petId: " + petId);

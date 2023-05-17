@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,5 +40,10 @@ public class TransmitterService {
     public Optional<GPS> getLocation() {
         GPS gps = gpsRepository.findLatest().get();
         return Optional.ofNullable(gps);
+    }
+
+    public List<GPS> getGpsList() {
+        List<GPS> gpsList = gpsRepository.findGpsList();
+        return gpsList;
     }
 }
