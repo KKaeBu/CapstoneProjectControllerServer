@@ -19,7 +19,7 @@ import java.util.List;
 public class WalkRequestDto {
     private String roadMapName;
     private long walkedTime;
-    private float travelDistance;
+    private Double travelDistance;
     private int burnedCalories;
     private List<PingRequestDto> pingList;
     private String walkDate;
