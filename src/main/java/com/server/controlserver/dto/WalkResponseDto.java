@@ -18,7 +18,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalkResponseDto {
-    private Pet pet;
     private Ping startPoint;
     private Ping endPoint;
     private RoadMap roadMap;

@@ -71,7 +71,6 @@ public class WalkService {
         pl.clear();
 
         WalkResponseDto walkResponseDto = new WalkResponseDto(
-                result.getPet(),
                 result.getStartPoint(),
                 result.getEndPoint(),
                 result.getRoadMap(),
