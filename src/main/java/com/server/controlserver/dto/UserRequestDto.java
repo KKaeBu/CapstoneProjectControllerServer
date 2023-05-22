@@ -17,39 +17,51 @@ import org.mindrot.jbcrypt.BCrypt;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestDto {
-    private String name; //이름
-    private String address; //주소
+    private String userName; //이름
+    private String userAddress; //주소
     private String userId; //아이디
-    private String password; //비밀번호
-    private String phone; //핸드폰번호
+    private String userPassword; //비밀번호
+    private String userPhone; //핸드폰번호
 
     private String petName; //이름
-    private int age; //나이
-    private String sex; //성별
-    private float weight; //몸무게
-    private Boolean isNeutered;//중성화 여부 (true = 1, false = 0)
-    private String species; //종
+    private int petAge; //나이
+    private String petSex; //성별
+    private float petWeight; //몸무게
+    private Boolean petIsNeutered;//중성화 여부 (true = 1, false = 0)
+    private String petSpecies; //종
 
     public User toUserEntity(Pet pet){
         String salt = BCrypt.gensalt();
         return User.builder()
                 .userId(this.userId)
-                .name(this.name)
-                .address(this.address)
-                .password(BCrypt.hashpw(this.password, BCrypt.gensalt()))
+                .name(this.userName)
+                .address(this.userAddress)
+                .password(BCrypt.hashpw(this.userPassword, BCrypt.gensalt()))
 //                .password(this.password)
-                .phone(this.phone)
+                .phone(this.userPhone)
                 .myPet(pet)
                 .build();
     }
     public Pet toPetEntity(){
         return Pet.builder()
                 .name(this.petName)
-                .age(this.age)
-                .sex(this.sex)
-                .weight(this.weight)
-                .isNeutered(this.isNeutered)
-                .species(this.species)
+                .age(this.petAge)
+                .sex(this.petSex)
+                .weight(this.petWeight)
+                .isNeutered(this.petIsNeutered)
+                .species(this.petSpecies)
+                .build();
+    }
+
+    public PetResponseDto toPetResponseEntity(Long petId) {
+        return PetResponseDto.builder()
+                .id(petId)
+                .name(this.petName)
+                .age(this.petAge)
+                .sex(this.petSex)
+                .weight(this.petWeight)
+                .isNeutered(this.petIsNeutered)
+                .species(this.petSpecies)
                 .build();
     }
 }

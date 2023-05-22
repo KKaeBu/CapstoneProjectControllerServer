@@ -40,36 +40,38 @@ public class UserController {
     // User 로그인
     @PostMapping("/api/login")
     @ResponseBody
-    public ResponseEntity<HttpHeaders> Login(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<UserResponseDto> Login(@RequestBody LoginRequestDto loginRequestDto) {
         System.out.println("loginData: " + loginRequestDto);
         String token = userService.Login(loginRequestDto.getUserId(), loginRequestDto.getPassword());
+        UserResponseDto userResponseDto = userService.findByUserId(loginRequestDto.getUserId());
 
         HttpHeaders httpHeaders = new HttpHeaders();
 
         if (token != null) {
             httpHeaders.add("Authorization", "Bearer " + token);
-            return new ResponseEntity<>(httpHeaders, HttpStatus.OK); /* http state code `200` 반환 */
+//            return new ResponseEntity<>(httpHeaders, HttpStatus.OK); /* http state code `200` 반환 */
+            return ResponseEntity.ok().headers(httpHeaders).body(userResponseDto);
         } else {
             return new ResponseEntity<>(httpHeaders, HttpStatus.BAD_REQUEST); /* http state code 400 반환 */
         }
     }
 
     // 특정 userId 가진 유저 정보 Get요청
-    @GetMapping("/api/users/userId/{userId}") //need userId(not null)
+    @GetMapping("/api/users/{userId}") //need userId(not null)
     @ResponseBody
     public ResponseEntity<UserResponseDto> findUserByUserId(@PathVariable("userId")String userId){
         return new ResponseEntity<UserResponseDto>(userService.findByUserId(userId),HttpStatus.OK);
     }
 
     // 특정 Id를 가진 유저 정보 Get요청
-    @GetMapping("/api/users/Id/{Id}") // need userId(PK)
+    @GetMapping("/api/users/{Id}") // need userId(PK)
     @ResponseBody
     public ResponseEntity<UserResponseDto> findUserById(@PathVariable("Id")Long Id){
         return new ResponseEntity<UserResponseDto>(userService.findById(Id),HttpStatus.OK);
     }
 
     // 특정 Name을 가진 유저 정보 Get요청
-    @GetMapping("/api/users/Name/{Name}") //need userName(not null)
+    @GetMapping("/api/users/{Name}") //need userName(not null)
     @ResponseBody
     public ResponseEntity<UserResponseDto> findUserByName(@PathVariable("Name")String Name){
         return new ResponseEntity<UserResponseDto>(userService.findByName(Name),HttpStatus.OK);
