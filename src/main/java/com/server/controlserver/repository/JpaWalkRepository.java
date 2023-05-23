@@ -4,7 +4,6 @@ import com.server.controlserver.domain.*;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,9 +31,8 @@ public class JpaWalkRepository implements WalkRepository{
     }
 
     @Override
-    public Walk delete(Walk walk){
+    public void delete(Walk walk){
         em.remove(walk);
-        return walk;
     }
 
     @Override
