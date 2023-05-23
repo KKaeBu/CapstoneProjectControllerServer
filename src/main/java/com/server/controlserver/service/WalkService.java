@@ -3,6 +3,7 @@ package com.server.controlserver.service;
 import com.server.controlserver.domain.*;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
+import com.server.controlserver.dto.WalkResponseDto;
 import com.server.controlserver.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class WalkService {
         this.petRepository = petRepository;
     }
 
-    public Walk walkOver(WalkRequestDto walkRequestDto, String key, ConcurrentHashMap<String, List<PingRequestDto>> pingList, Long petId) {
+    public WalkResponseDto walkOver(WalkRequestDto walkRequestDto, String key, ConcurrentHashMap<String, List<PingRequestDto>> pingList, Long petId) {
         //Activity 저장
         Activity activity = walkRequestDto.toActivityEntity();
         activityRepository.save(activity);
@@ -78,8 +79,16 @@ public class WalkService {
         //데이터 할당 청소
         pl.clear();
 
+        WalkResponseDto walkResponseDto = new WalkResponseDto(
+                result.getStartPoint(),
+                result.getEndPoint(),
+                result.getRoadMap(),
+                result.getActivity(),
+                result.getWalkDate()
+        );
 
-        return result;
+
+        return walkResponseDto;
     }
 
     public List<Walk> findAllByPetId(Long petId){
@@ -89,6 +98,27 @@ public class WalkService {
 
     public Optional<Walk> findById( Long walkId){
         return walkRepository.findById(walkId);
+    }
+
+    // 가장 최근 산책로 가져오기
+    public WalkResponseDto findByLastestWalk(Long petId) {
+        Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
+        System.out.println("lastestWalk: " + lastestWalk);
+        System.out.println("activity: " + lastestWalk.getActivity());
+        System.out.println("roadMap: " + lastestWalk.getRoadMap());
+        System.out.println("roeadMap_Pinglist: " + lastestWalk.getRoadMap().getPingList());
+        System.out.println("startPing: " + lastestWalk.getStartPoint());
+        System.out.println("endPing: " + lastestWalk.getEndPoint());
+        System.out.println("walkedDate: " + lastestWalk.getWalkDate());
+
+
+        return new WalkResponseDto(
+                lastestWalk.getStartPoint(),
+                lastestWalk.getEndPoint(),
+                lastestWalk.getRoadMap(),
+                lastestWalk.getActivity(),
+                lastestWalk.getWalkDate()
+        );
     }
 
     public RoadMap findRoadMapById(Long walkId) { return walkRepository.findById(walkId).get().getRoadMap();}

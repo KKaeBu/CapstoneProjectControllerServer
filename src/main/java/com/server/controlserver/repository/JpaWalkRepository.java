@@ -1,6 +1,7 @@
 package com.server.controlserver.repository;
 
 import com.server.controlserver.domain.*;
+import com.server.controlserver.dto.WalkResponseDto;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
@@ -44,9 +45,20 @@ public class JpaWalkRepository implements WalkRepository{
     @Override
     public Optional<Walk> findByRoadMapId(Long id) {
         Walk result = em.createQuery("select w from Walk w where w.roadMap.id = :id", Walk.class)
-                .setParameter("road_map_id",id)
+                .setParameter("road_map",id)
                 .getSingleResult();
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Walk> lastestWalkFindByPetId(Long petId) {
+        Walk lastestWalk = em.createQuery("select w from Walk w where (w.pet.id = :petId and w.walkDate = (select MAX(w2.walkDate) from Walk w2))", Walk.class)
+                .setParameter("petId",petId)
+                .getSingleResult();
+
+
+        return Optional.ofNullable(lastestWalk);
+
     }
 
     @Override

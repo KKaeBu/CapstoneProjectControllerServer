@@ -39,7 +39,7 @@ public class JpaGPSRepository implements GPSRepository{
 
     @Override
     public List<GPS> findGpsList() {
-        List<GPS> gpsList = em.createQuery("select g from GPS g where g.id > 40", GPS.class)
+        List<GPS> gpsList = em.createQuery("select g from GPS g where g.id > 30", GPS.class)
                 .getResultList();
         return gpsList;
     }

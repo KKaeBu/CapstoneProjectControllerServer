@@ -30,5 +30,5 @@ public class Ping {
     private double altitude; //고도
     @Column(name = "create_time", nullable = false)
     @CreationTimestamp
-    private Date timeStamp; // default값으로 저장시간 자동으로 추가
+    private Date createTime;
 }

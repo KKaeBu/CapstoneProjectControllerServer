@@ -35,14 +35,28 @@ public class PetService {
         Pet pet = petRequestDto.toEntity();
         petRepository.save(pet);
         return new PetResponseDto(
+                pet.getId(),
                 pet.getName(),
                 pet.getAge(),
                 pet.getSex(),
                 pet.getWeight(),
                 pet.getIsNeutered(),
-                pet.getSpecies(),
-                pet.getWalkList(),
-                pet.getCreateTime());
+                pet.getSpecies()
+        );
+
+    }
+
+    public PetResponseDto findById(Long id) {
+        Pet pet = petRepository.findById(id).get();
+        return new PetResponseDto(
+                pet.getId(),
+                pet.getName(),
+                pet.getAge(),
+                pet.getSex(),
+                pet.getWeight(),
+                pet.getIsNeutered(),
+                pet.getSpecies()
+        );
     }
 
 }

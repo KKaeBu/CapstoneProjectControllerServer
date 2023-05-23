@@ -38,15 +38,20 @@ public class UserService {
     public UserResponseDto join(UserRequestDto userRequestDto){
         Pet pet = userRequestDto.toPetEntity();
         User user = userRequestDto.toUserEntity(pet);
+
         validateDuplicateUser(user);
 
         userRepository.save(user);
+        petRepository.save(pet);
+
+        PetResponseDto petResponseDto = userRequestDto.toPetResponseEntity(pet.getId()); //pet과의 순서 중요
+
         return new UserResponseDto(
                 user.getName(),
                 user.getAddress(),
                 user.getUserId(),
                 user.getPhone(),
-                user.getMyPet(),
+                petResponseDto,
                 user.getCreateTime()
         );
     }
@@ -73,36 +78,66 @@ public class UserService {
 
     public UserResponseDto findByUserId(String userId){
         User user = userRepository.findByUserId(userId).get();
+        PetResponseDto petResponseDto = new PetResponseDto(
+                user.getMyPet().getId(),
+                user.getMyPet().getName(),
+                user.getMyPet().getAge(),
+                user.getMyPet().getSex(),
+                user.getMyPet().getWeight(),
+                user.getMyPet().getIsNeutered(),
+                user.getMyPet().getSpecies()
+        );
+
         return new UserResponseDto(
                 user.getName(),
                 user.getAddress(),
                 user.getUserId(),
                 user.getPhone(),
-                user.getMyPet(),
+                petResponseDto,
                 user.getCreateTime()
         );
     }
 
     public UserResponseDto findById(Long Id){
         User user = userRepository.findById(Id).get();
+        PetResponseDto petResponseDto = new PetResponseDto(
+                user.getMyPet().getId(),
+                user.getMyPet().getName(),
+                user.getMyPet().getAge(),
+                user.getMyPet().getSex(),
+                user.getMyPet().getWeight(),
+                user.getMyPet().getIsNeutered(),
+                user.getMyPet().getSpecies()
+        );
+
         return new UserResponseDto(
                 user.getName(),
                 user.getAddress(),
                 user.getUserId(),
                 user.getPhone(),
-                user.getMyPet(),
+                petResponseDto,
                 user.getCreateTime()
         );
     }
 
     public UserResponseDto findByName(String Name){
         User user = userRepository.findByName(Name).get();
+        PetResponseDto petResponseDto = new PetResponseDto(
+                user.getMyPet().getId(),
+                user.getMyPet().getName(),
+                user.getMyPet().getAge(),
+                user.getMyPet().getSex(),
+                user.getMyPet().getWeight(),
+                user.getMyPet().getIsNeutered(),
+                user.getMyPet().getSpecies()
+        );
+
         return new UserResponseDto(
                 user.getName(),
                 user.getAddress(),
                 user.getUserId(),
                 user.getPhone(),
-                user.getMyPet(),
+                petResponseDto,
                 user.getCreateTime()
         );
     }
@@ -112,13 +147,23 @@ public class UserService {
         List<UserResponseDto> userResponseDtoList = new ArrayList<>();
 
         for(User u : userList) {
+            PetResponseDto petResponseDto = new PetResponseDto(
+                    u.getMyPet().getId(),
+                    u.getMyPet().getName(),
+                    u.getMyPet().getAge(),
+                    u.getMyPet().getSex(),
+                    u.getMyPet().getWeight(),
+                    u.getMyPet().getIsNeutered(),
+                    u.getMyPet().getSpecies()
+            );
+
             userResponseDtoList
                     .add(new UserResponseDto(
                             u.getName(),
                             u.getAddress(),
                             u.getUserId(),
                             u.getPhone(),
-                            u.getMyPet(),
+                            petResponseDto,
                             u.getCreateTime()
                         )
                     );
@@ -134,14 +179,14 @@ public class UserService {
     public PetResponseDto findPetByUserId(String userId){
         Pet pet = userRepository.findByUserId(userId).get().getMyPet();
         return new PetResponseDto(
+                pet.getId(),
                 pet.getName(),
                 pet.getAge(),
                 pet.getSex(),
                 pet.getWeight(),
                 pet.getIsNeutered(),
-                pet.getSpecies(),
-                pet.getWalkList(),
-                pet.getCreateTime());
+                pet.getSpecies()
+        );
     }
 
     public String deleteMyPet(String userId){
