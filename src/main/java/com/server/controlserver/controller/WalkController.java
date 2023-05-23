@@ -29,6 +29,7 @@ public class WalkController {
         this.pingList = new ConcurrentHashMap<String, List<PingRequestDto>>();
     }
 
+    // 산책 종료시 새로운 산책 데이터 생성
     @PostMapping("/api/pets/{petId}/walks")
     @ResponseBody
     public ResponseEntity<WalkResponseDto> walkEnd(@PathVariable Long petId, @RequestBody WalkRequestDto walkRequestDto) {

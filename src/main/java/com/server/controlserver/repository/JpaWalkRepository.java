@@ -57,6 +57,8 @@ public class JpaWalkRepository implements WalkRepository{
         Walk lastestWalk = em.createQuery("select w from Walk w where (w.pet.id = :petId and w.walkDate = (select MAX(w2.walkDate) from Walk w2))", Walk.class)
                 .setParameter("petId",petId)
                 .getSingleResult();
+
+
         return Optional.ofNullable(lastestWalk);
 
     }
