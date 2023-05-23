@@ -51,7 +51,7 @@ public class JpaWalkRepository implements WalkRepository{
     }
 
     @Override
-    public Optional<Walk> lastestWalkFindByPetId(Long petId) {
+    public Optional<Walk> latestWalkFindByPetId(Long petId) {
         Walk lastestWalk = em.createQuery("select w from Walk w where (w.pet.id = :petId and w.walkDate = (select MAX(w2.walkDate) from Walk w2))", Walk.class)
                 .setParameter("petId",petId)
                 .getSingleResult();
@@ -65,7 +65,6 @@ public class JpaWalkRepository implements WalkRepository{
     public List<Walk> findAll() {
         List<Walk> result = em.createQuery("select w from Walk w", Walk.class)
                 .getResultList();
-        System.out.println(result);
         return result;
     }
 }

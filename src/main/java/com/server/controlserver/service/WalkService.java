@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Transactional
 public class WalkService {
     /*
-        ************8 현재 인기있는 구역을 찾아내는 로직
+        ************ 현재 인기있는 구역을 찾아내는 로직
         1. 모든 반려동물의 산책로를 가져온다. or 모든 산책의 Ping을 가져온다. 어떤 Pet의 Ping인지 구별하려면 Walk를 통해서 Ping들을 불러와야할 것 같음
         2. 단, Ping을 가져올 때 어떤 Pet의 Ping인지는 구별해야함.
         -> 사용자 본인의 Ping을 인기있는 구역을 판단할 때 지표로써 사용되면 안되기 때문에.
@@ -27,11 +27,11 @@ public class WalkService {
         3. 모든 Ping을 기준으로 우리가 설정한 범위(위도,경도에서 +- 값으로 주면 될거같음)내에 본인을 제외한 사용자의 Ping의 개수로 인기있는 구역을 판단
      */
 
-    private WalkRepository walkRepository;
-    private PingRepository pingRepository;
-    private ActivityRepository activityRepository;
+    private final WalkRepository walkRepository;
+    private final PingRepository pingRepository;
+    private final ActivityRepository activityRepository;
     private RoadMapRepository roadMapRepository;
-    private PetRepository petRepository;
+    private final PetRepository petRepository;
 
     @Autowired
     public WalkService(WalkRepository walkRepository, PingRepository pingRepository, ActivityRepository activityRepository, RoadMapRepository roadMapRepository, PetRepository petRepository) {
@@ -102,7 +102,7 @@ public class WalkService {
 
     // 가장 최근 산책로 가져오기
     public WalkResponseDto findByLastestWalk(Long petId) {
-        Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
+        Walk lastestWalk = walkRepository.latestWalkFindByPetId(petId).get();
         System.out.println("lastestWalk: " + lastestWalk);
         System.out.println("activity: " + lastestWalk.getActivity());
         System.out.println("roadMap: " + lastestWalk.getRoadMap());
@@ -146,7 +146,38 @@ public class WalkService {
 
     public List<Walk> findHotPlace(){
         List<Walk> allWalkList = walkRepository.findAll();
-        System.out.println(allWalkList);
+        for(Walk w : allWalkList){
+            int count = 0;
+// 88888 Walk는 반복문 말고 Query로 한번 거르자!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            List<Ping> pingList = w.getRoadMap().getPingList();
+
+            Long selectedPetId = w.getPet().getId();
+
+            for(Walk compareList : allWalkList){
+                Long comaredPetId = compareList.getPet().getId();
+                if(selectedPetId == comaredPetId){
+                    System.out.println("비교할 산책이 본인의 산책임");
+                }else{
+                    System.out.println("선택한 petId: "+selectedPetId + "비교 petId: "+compareList.getPet().getId());
+                    // ****** 여기서 서로다른 Walk임을 확인했으면, 각 Ping들 비교 근데 뭔가 좀 이상하네
+                    count = comparePing(w.getRoadMap().getPingList(), compareList.getRoadMap().getPingList(), count);
+                }
+            }
+            if(count > 2){
+                System.out.println(w.getId() + "id 산책로는 인기산책로"); // 인기산책로에 추가..? 식으로 해야하나
+            }
+        }
         return allWalkList;
+    }
+
+    public int comparePing(List<Ping>selectedPing, List<Ping>comparedPing, int count){
+        for(Ping p : selectedPing){
+            for(Ping c : comparedPing) {
+                if (p == c) { // 일정 범위 안에 있다면 인데, 일단 이렇게 표현해놓음
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 }

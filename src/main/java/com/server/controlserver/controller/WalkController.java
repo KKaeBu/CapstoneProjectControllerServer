@@ -103,12 +103,11 @@ public class WalkController {
     @ResponseBody
     public ResponseEntity<List<Walk>> findHotPlaceTest(){
         List<Walk> walkList = walkService.findHotPlace();
-//        if(!walkList.isEmpty()){
-//            return new ResponseEntity<List<Walk>>(walkList, HttpStatus.OK);
-//        }else{
-//            return new ResponseEntity<List<Walk>>(walkList,HttpStatus.NO_CONTENT);
-//        }
-        return new ResponseEntity<List<Walk>>(walkList, HttpStatus.OK);
+        if(!walkList.isEmpty()){
+            return new ResponseEntity<List<Walk>>(walkList, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<List<Walk>>(walkList,HttpStatus.NO_CONTENT);
+        }
     }
 
     // *********** 산책로 ***********
