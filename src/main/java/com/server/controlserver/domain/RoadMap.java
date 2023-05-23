@@ -1,5 +1,6 @@
 package com.server.controlserver.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name="road_tb")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class RoadMap {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

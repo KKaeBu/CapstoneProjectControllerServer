@@ -94,14 +94,6 @@ public class WalkService {
     // 가장 최근 산책로 가져오기
     public WalkResponseDto findByLastestWalk(Long petId) {
         Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
-        System.out.println("lastestWalk: " + lastestWalk);
-        System.out.println("activity: " + lastestWalk.getActivity());
-        System.out.println("roadMap: " + lastestWalk.getRoadMap());
-        System.out.println("roeadMap_Pinglist: " + lastestWalk.getRoadMap().getPingList());
-        System.out.println("startPing: " + lastestWalk.getStartPoint());
-        System.out.println("endPing: " + lastestWalk.getEndPoint());
-        System.out.println("walkedDate: " + lastestWalk.getWalkDate());
-
 
         return new WalkResponseDto(
                 lastestWalk.getStartPoint(),
