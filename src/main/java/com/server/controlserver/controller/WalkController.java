@@ -89,6 +89,18 @@ public class WalkController {
         }
     }
 
+    // HotPlace 테스트용
+    @GetMapping("/api/walks/test")
+    @ResponseBody
+    public ResponseEntity<List<Walk>> findHotPlaceTest(){
+        List<Walk> walkList = walkService.findHotPlace();
+        if(walkList.size() != 0){
+            return new ResponseEntity<List<Walk>>(walkList, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<List<Walk>>(walkList,HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // *********** 산책로 ***********
 
     // 특정 산책의 산책로 가져오기

@@ -114,8 +114,9 @@ public class WalkService {
         }
     }
 
-    public void FindHotPlace(){
+    public List<Walk> findHotPlace(){
         List<Walk> allWalkList = walkRepository.findAll();
         System.out.println(allWalkList);
+        return allWalkList;
     }
 }

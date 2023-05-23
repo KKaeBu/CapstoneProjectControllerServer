@@ -55,6 +55,7 @@ public class JpaWalkRepository implements WalkRepository{
     public List<Walk> findAll() {
         List<Walk> result = em.createQuery("select w from Walk w", Walk.class)
                 .getResultList();
+        System.out.println(result);
         return result;
     }
 }
