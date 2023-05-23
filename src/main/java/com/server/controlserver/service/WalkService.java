@@ -91,6 +91,19 @@ public class WalkService {
         return walkRepository.findById(walkId);
     }
 
+    public WalkResponseDto findByLastestWalk(Long petId) {
+        Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
+        System.out.println("lastestWalk: " + lastestWalk.);
+
+        return new WalkResponseDto(
+                lastestWalk.getStartPoint(),
+                lastestWalk.getEndPoint(),
+                lastestWalk.getRoadMap(),
+                lastestWalk.getActivity(),
+                lastestWalk.getWalkDate()
+        );
+    }
+
     public RoadMap findRoadMapById(Long walkId) { return walkRepository.findById(walkId).get().getRoadMap();}
 
     public boolean deleteAll(Long petId){

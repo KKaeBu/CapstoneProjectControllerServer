@@ -67,6 +67,13 @@ public class WalkController {
         return new ResponseEntity<Optional<Walk>>(walkService.findById(walkId),HttpStatus.OK);
     }
 
+    // 특정 반려동물의 가장 최근 산책 하나 가져오기
+    @GetMapping("/api/pets/{petId}/walks/lastest")
+    @ResponseBody
+    public ResponseEntity<WalkResponseDto> getLastestWalk(@PathVariable Long petId){
+        return new ResponseEntity<>(walkService.findByLastestWalk(petId), HttpStatus.OK);
+    }
+
 
     // 한 강아지의 산책 전부 삭제
     @DeleteMapping("/api/pets/{petId}/walks")
