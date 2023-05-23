@@ -45,7 +45,7 @@ public class JpaWalkRepository implements WalkRepository{
 
     @Override
     public Optional<Walk> findByRoadMapId(Long id) {
-        Walk result = em.createQuery("select w from Walk w where w.roadMapId = :id", Walk.class)
+        Walk result = em.createQuery("select w from Walk w where w.roadMap.id = :id", Walk.class)
                 .setParameter("road_map_id",id)
                 .getSingleResult();
         return Optional.ofNullable(result);

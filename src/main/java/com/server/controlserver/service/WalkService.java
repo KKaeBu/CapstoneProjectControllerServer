@@ -16,6 +16,15 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 @Transactional
 public class WalkService {
+    /*
+        ************8 현재 인기있는 구역을 찾아내는 로직
+        1. 모든 반려동물의 산책로를 가져온다. or 모든 산책의 Ping을 가져온다. 어떤 Pet의 Ping인지 구별하려면 Walk를 통해서 Ping들을 불러와야할 것 같음
+        2. 단, Ping을 가져올 때 어떤 Pet의 Ping인지는 구별해야함.
+        -> 사용자 본인의 Ping을 인기있는 구역을 판단할 때 지표로써 사용되면 안되기 때문에.
+        ex) 인기있는 구역을 판단하는 범위가 100m라고 했을 때, 한 사용자가 100m 안에서 많은 핑을 발생시켰다면,
+            해당구역은 한 사용자만이 사용했음에도, 인기있는 구역으로 판단 할 수 있기 때문에, 본인의 핑은 제외시켜야한다.
+        3. 모든 Ping을 기준으로 우리가 설정한 범위(위도,경도에서 +- 값으로 주면 될거같음)내에 본인을 제외한 사용자의 Ping의 개수로 인기있는 구역을 판단
+     */
 
     private WalkRepository walkRepository;
     private PingRepository pingRepository;
@@ -103,5 +112,10 @@ public class WalkService {
         }else{
             return false;
         }
+    }
+
+    public void FindHotPlace(){
+        List<Walk> allWalkList = walkRepository.findAll();
+        System.out.println(allWalkList);
     }
 }
