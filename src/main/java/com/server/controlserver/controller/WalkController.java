@@ -101,12 +101,12 @@ public class WalkController {
     // HotPlace 테스트용
     @GetMapping("/api/walks/test/{petId}")
     @ResponseBody
-    public ResponseEntity<List<Walk>> findHotPlaceTest(@PathVariable Long petId){
-        List<Walk> walkList = walkService.findHotPlace(petId);
-        if(!walkList.isEmpty()){
-            return new ResponseEntity<List<Walk>>(walkList, HttpStatus.OK);
+    public ResponseEntity<?> findHotPlaceTest(@PathVariable Long petId){
+        boolean isTrue = walkService.findHotPlace(petId);
+        if(isTrue){
+            return new ResponseEntity<Boolean>(isTrue, HttpStatus.OK);
         }else{
-            return new ResponseEntity<List<Walk>>(walkList,HttpStatus.NO_CONTENT);
+            return new ResponseEntity<Boolean>(isTrue,HttpStatus.NO_CONTENT);
         }
     }
 

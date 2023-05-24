@@ -33,6 +33,14 @@ public class WalkService {
     private RoadMapRepository roadMapRepository;
     private final PetRepository petRepository;
 
+    // 가장 작은 위도(latitude)와 경도(longitude)를 초기값으로 설정
+    double minLatitude = Double.MAX_VALUE;
+    double minLongitude = Double.MAX_VALUE;
+
+    // 가장 큰 위도(latitude)와 경도(longitude)를 초기값으로 설정
+    double maxLatitude = Double.MIN_VALUE;
+    double maxLongitude = Double.MIN_VALUE;
+
     @Autowired
     public WalkService(WalkRepository walkRepository, PingRepository pingRepository, ActivityRepository activityRepository, RoadMapRepository roadMapRepository, PetRepository petRepository) {
         this.walkRepository = walkRepository;
@@ -144,56 +152,68 @@ public class WalkService {
         }
     }
 
-    public List<Walk> findHotPlace(Long petId){
-        List<Walk> myWalk = walkRepository.findByPetId(petId);
-        List<Ping> mylist = new ArrayList<>();  // mylist를 ArrayList로 초기화합니다.
-        for(Walk w : myWalk) {
-            System.out.println("내 펫 산책: "+w.getPet().getId());
-            for (Ping p : w.getRoadMap().getPingList()) {
-                mylist.add(p);
-            }
-        }
-        System.out.println("핑 리스트: "+mylist); // 이 핑 리스트는 내 펫의 산책 핑 리스트
-        // 이제 아래 다른 사용자들의 Walklist에서 Ping을 뽑아와 그 리스트랑 비교하면 될듯?
-
-        List<Walk> allWalkList = walkRepository.findAll(petId); // 이 allWalkList는 본인을 제외한 Walk 리스트
-        System.out.println("내 pet빼고 Id: ");
-        for(Walk w : allWalkList){
-            System.out.println(w.getPet().getId());
-        }
-
-//        for(Walk w : allWalkList){
-//            int count = 0;
-
-//            List<Ping> pingList = w.getRoadMap().getPingList();
-//
-//            Long selectedPetId = w.getPet().getId();
-//
-//            for(Walk compareList : allWalkList){
-//                Long comaredPetId = compareList.getPet().getId();
-//                if(selectedPetId == comaredPetId){
-//                    System.out.println("비교할 산책이 본인의 산책임");
-//                }else{
-//                    System.out.println("선택한 petId: "+selectedPetId + "비교 petId: "+compareList.getPet().getId());
-//                    // ****** 여기서 서로다른 Walk임을 확인했으면, 각 Ping들 비교 근데 뭔가 좀 이상하네
-//                    count = comparePing(w.getRoadMap().getPingList(), compareList.getRoadMap().getPingList(), count);
-//                }
-//            }
-//            if(count > 2){
-//                System.out.println(w.getId() + "id 산책로는 인기산책로"); // 인기산책로에 추가..? 식으로 해야하나
+    public boolean findHotPlace(Long petId){
+//        List<Walk> myWalk = walkRepository.findByPetId(petId);
+//        List<Ping> mylist = new ArrayList<>();  // mylist를 ArrayList로 초기화합니다.
+//        for(Walk w : myWalk) {
+//            System.out.println("내 펫 산책: "+w.getPet().getId());
+//            for (Ping p : w.getRoadMap().getPingList()) {
+//                mylist.add(p);
 //            }
 //        }
-        return allWalkList;
-    }
+//        System.out.println("핑 리스트: "+mylist); // 이 핑 리스트는 내 펫의 산책 핑 리스트
 
-    public int comparePing(List<Ping>selectedPing, List<Ping>comparedPing, int count){
-        for(Ping p : selectedPing){
-            for(Ping c : comparedPing) {
-                if (p == c) { // 일정 범위 안에 있다면 인데, 일단 이렇게 표현해놓음
-                    count++;
+        List<Ping> allPingList = pingRepository.findAll();
+
+        // 모든 Ping 객체를 반복하면서 가장 작은/큰 위도와 경도를 찾음
+        for (Ping ping : allPingList) {
+            double latitude = ping.getLatitude();
+            double longitude = ping.getLongitude();
+
+            // 가장 작은 위도(latitude)와 경도(longitude) 업데이트
+            minLatitude = Math.min(minLatitude, latitude);
+            minLongitude = Math.min(minLongitude, longitude);
+
+            // 가장 큰 위도(latitude)와 경도(longitude) 업데이트
+            maxLatitude = Math.max(maxLatitude, latitude);
+            maxLongitude = Math.max(maxLongitude, longitude);
+        }
+
+        System.out.println("minLatitude : " + minLatitude);
+        System.out.println("minLongitude : " + minLongitude);
+        System.out.println("maxLatitude : " + maxLatitude);
+        System.out.println("maxLongitude : " + maxLongitude);
+
+        // 구역의 왼쪽 아래 꼭지점
+        Coordinate bottomLeft = new Coordinate(minLatitude, minLongitude);
+
+        // 구역의 오른쪽 위 꼭지점
+        Coordinate topRight = new Coordinate(maxLatitude, maxLongitude);
+
+        // 구역 내의 100m 간격으로 Ping 객체의 개수를 세는 변수
+        int count = 0;
+
+        // 구역을 100m * 100m 간격으로 나누어 탐색
+        for (double lat = bottomLeft.getLatitude(); lat <= topRight.getLatitude(); lat += 0.001) {
+            for (double lng = bottomLeft.getLongitude(); lng <= topRight.getLongitude(); lng += 0.001) {
+                // 현재 좌표 (lat, lng)에 해당하는 구역 내에 속하는 Ping 객체 개수를 센다
+                int subCount = 0;
+                for (Ping ping : allPingList) {
+                    double pingLat = ping.getLatitude();
+                    double pingLng = ping.getLongitude();
+                    if (pingLat >= lat && pingLat < lat + 0.001 && pingLng >= lng && pingLng < lng + 0.001) {
+                        subCount++;
+                    }
+                }
+                count += subCount;
+                if(subCount > 0) {
+                    System.out.println("구역 내 (" + lat + ", " + lng + ") 위치의 Ping 객체 개수: " + subCount);
                 }
             }
         }
-        return count;
+
+        System.out.println("구역 내 총 Ping 객체 개수: " + count);
+
+        return true;
     }
 }
