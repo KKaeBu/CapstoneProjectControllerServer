@@ -146,18 +146,25 @@ public class WalkService {
 
     public List<Walk> findHotPlace(Long petId){
         List<Walk> myWalk = walkRepository.findByPetId(petId);
-        System.out.println("내 펫 산책: ");
-        for(Walk w : myWalk){
-            System.out.println(w.getPet().getId());
+        List<Ping> mylist = new ArrayList<>();  // mylist를 ArrayList로 초기화합니다.
+        for(Walk w : myWalk) {
+            System.out.println("내 펫 산책: "+w.getPet().getId());
+            for (Ping p : w.getRoadMap().getPingList()) {
+                mylist.add(p);
+            }
         }
+        System.out.println("핑 리스트: "+mylist); // 이 핑 리스트는 내 펫의 산책 핑 리스트
+        // 이제 아래 다른 사용자들의 Walklist에서 Ping을 뽑아와 그 리스트랑 비교하면 될듯?
+
         List<Walk> allWalkList = walkRepository.findAll(petId); // 이 allWalkList는 본인을 제외한 Walk 리스트
         System.out.println("내 pet빼고 Id: ");
         for(Walk w : allWalkList){
             System.out.println(w.getPet().getId());
         }
+
 //        for(Walk w : allWalkList){
 //            int count = 0;
-//// 88888 Walk는 반복문 말고 Query로 한번 거르자!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 //            List<Ping> pingList = w.getRoadMap().getPingList();
 //
 //            Long selectedPetId = w.getPet().getId();
