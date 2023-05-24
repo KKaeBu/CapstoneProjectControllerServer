@@ -152,17 +152,7 @@ public class WalkService {
         }
     }
 
-    public boolean findHotPlace(Long petId){
-//        List<Walk> myWalk = walkRepository.findByPetId(petId);
-//        List<Ping> mylist = new ArrayList<>();  // mylist를 ArrayList로 초기화합니다.
-//        for(Walk w : myWalk) {
-//            System.out.println("내 펫 산책: "+w.getPet().getId());
-//            for (Ping p : w.getRoadMap().getPingList()) {
-//                mylist.add(p);
-//            }
-//        }
-//        System.out.println("핑 리스트: "+mylist); // 이 핑 리스트는 내 펫의 산책 핑 리스트
-
+    public List<Coordinate> findHotPlace(){
         List<Ping> allPingList = pingRepository.findAll();
 
         // 모든 Ping 객체를 반복하면서 가장 작은/큰 위도와 경도를 찾음
@@ -193,6 +183,9 @@ public class WalkService {
         // 구역 내의 100m 간격으로 Ping 객체의 개수를 세는 변수
         int count = 0;
 
+        // 인기 구역의 위도, 경도를 저장할 빈 List
+        List<Coordinate> hotPlace = new ArrayList<>();
+
         // 구역을 100m * 100m 간격으로 나누어 탐색
         for (double lat = bottomLeft.getLatitude(); lat <= topRight.getLatitude(); lat += 0.001) {
             for (double lng = bottomLeft.getLongitude(); lng <= topRight.getLongitude(); lng += 0.001) {
@@ -209,11 +202,15 @@ public class WalkService {
                 if(subCount > 0) {
                     System.out.println("구역 내 (" + lat + ", " + lng + ") 위치의 Ping 객체 개수: " + subCount);
                 }
+                if(subCount > 10){
+                    Coordinate hotPing = new Coordinate(lat,lng);
+                    hotPlace.add(hotPing);
+                }
             }
         }
 
         System.out.println("구역 내 총 Ping 객체 개수: " + count);
-
-        return true;
+        System.out.println("Ping이 10개 이상 밀집된 구역 : " + hotPlace);
+        return hotPlace;
     }
 }

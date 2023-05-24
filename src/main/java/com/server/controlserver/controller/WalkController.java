@@ -5,6 +5,7 @@ import com.server.controlserver.domain.Walk;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
 import com.server.controlserver.dto.WalkResponseDto;
+import com.server.controlserver.service.Coordinate;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -101,12 +102,12 @@ public class WalkController {
     // HotPlace 테스트용
     @GetMapping("/api/walks/test/{petId}")
     @ResponseBody
-    public ResponseEntity<?> findHotPlaceTest(@PathVariable Long petId){
-        boolean isTrue = walkService.findHotPlace(petId);
-        if(isTrue){
-            return new ResponseEntity<Boolean>(isTrue, HttpStatus.OK);
+    public ResponseEntity<List<Coordinate>> findHotPlaceTest(@PathVariable Long petId){
+        List<Coordinate> hotPlaceList= walkService.findHotPlace();
+        if(!hotPlaceList.isEmpty()){
+            return new ResponseEntity<List<Coordinate>>(hotPlaceList, HttpStatus.OK);
         }else{
-            return new ResponseEntity<Boolean>(isTrue,HttpStatus.NO_CONTENT);
+            return new ResponseEntity<List<Coordinate>>(hotPlaceList,HttpStatus.NO_CONTENT);
         }
     }
 
