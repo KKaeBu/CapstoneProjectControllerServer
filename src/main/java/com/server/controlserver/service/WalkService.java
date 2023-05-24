@@ -144,29 +144,38 @@ public class WalkService {
         }
     }
 
-    public List<Walk> findHotPlace(){
-        List<Walk> allWalkList = walkRepository.findAll();
-        for(Walk w : allWalkList){
-            int count = 0;
-// 88888 Walk는 반복문 말고 Query로 한번 거르자!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            List<Ping> pingList = w.getRoadMap().getPingList();
-
-            Long selectedPetId = w.getPet().getId();
-
-            for(Walk compareList : allWalkList){
-                Long comaredPetId = compareList.getPet().getId();
-                if(selectedPetId == comaredPetId){
-                    System.out.println("비교할 산책이 본인의 산책임");
-                }else{
-                    System.out.println("선택한 petId: "+selectedPetId + "비교 petId: "+compareList.getPet().getId());
-                    // ****** 여기서 서로다른 Walk임을 확인했으면, 각 Ping들 비교 근데 뭔가 좀 이상하네
-                    count = comparePing(w.getRoadMap().getPingList(), compareList.getRoadMap().getPingList(), count);
-                }
-            }
-            if(count > 2){
-                System.out.println(w.getId() + "id 산책로는 인기산책로"); // 인기산책로에 추가..? 식으로 해야하나
-            }
+    public List<Walk> findHotPlace(Long petId){
+        List<Walk> myWalk = walkRepository.findByPetId(petId);
+        System.out.println("내 펫 산책: ");
+        for(Walk w : myWalk){
+            System.out.println(w.getPet().getId());
         }
+        List<Walk> allWalkList = walkRepository.findAll(petId); // 이 allWalkList는 본인을 제외한 Walk 리스트
+        System.out.println("내 pet빼고 Id: ");
+        for(Walk w : allWalkList){
+            System.out.println(w.getPet().getId());
+        }
+//        for(Walk w : allWalkList){
+//            int count = 0;
+//// 88888 Walk는 반복문 말고 Query로 한번 거르자!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//            List<Ping> pingList = w.getRoadMap().getPingList();
+//
+//            Long selectedPetId = w.getPet().getId();
+//
+//            for(Walk compareList : allWalkList){
+//                Long comaredPetId = compareList.getPet().getId();
+//                if(selectedPetId == comaredPetId){
+//                    System.out.println("비교할 산책이 본인의 산책임");
+//                }else{
+//                    System.out.println("선택한 petId: "+selectedPetId + "비교 petId: "+compareList.getPet().getId());
+//                    // ****** 여기서 서로다른 Walk임을 확인했으면, 각 Ping들 비교 근데 뭔가 좀 이상하네
+//                    count = comparePing(w.getRoadMap().getPingList(), compareList.getRoadMap().getPingList(), count);
+//                }
+//            }
+//            if(count > 2){
+//                System.out.println(w.getId() + "id 산책로는 인기산책로"); // 인기산책로에 추가..? 식으로 해야하나
+//            }
+//        }
         return allWalkList;
     }
 

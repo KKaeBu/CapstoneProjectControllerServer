@@ -13,6 +13,7 @@ public interface WalkRepository {
     void delete(Walk walk); // 산책 삭제
     Optional<Walk> findById(Long id); //id로 찾아서 반환
     Optional<Walk> findByRoadMapId(Long id); //이름으로 찾아서 반환
+    List<Walk> findByPetId(Long petId);
     Optional<Walk> latestWalkFindByPetId(Long petId);
-    List<Walk> findAll(); //모든 회원 반환
+    List<Walk> findAll(Long petId); // 본인을 제외한 모든 Walk 반환
 }
