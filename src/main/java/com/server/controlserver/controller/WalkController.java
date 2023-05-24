@@ -98,6 +98,12 @@ public class WalkController {
         }
     }
 
+    @GetMapping("/api/walks/{walkId}/coords")
+    @ResponseBody
+    public ResponseEntity<String> getCoordsList(@PathVariable Long walkId){
+        return new ResponseEntity<>(walkService.getCoordsList(walkId), HttpStatus.OK);
+    }
+
     // *********** 산책로 ***********
 
     // 특정 산책의 산책로 가져오기

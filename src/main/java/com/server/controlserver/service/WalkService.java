@@ -126,4 +126,12 @@ public class WalkService {
             return false;
         }
     }
+
+    public String getCoordsList(Long walkId){
+        List<Ping> pl = walkRepository.coordsListFindByWalkId(walkId);
+
+        // 받아온 산책 핑 리스트 처리 과정이 필요 (리턴값도 변경해야함)
+
+        return pl.toString();
+    }
 }

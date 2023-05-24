@@ -70,4 +70,13 @@ public class JpaWalkRepository implements WalkRepository{
                 .getResultList();
         return result;
     }
+
+    @Override
+    public List<Ping> coordsListFindByWalkId(Long walkId) {
+        RoadMap rm = (RoadMap) em.createQuery("select w.roadMap from Walk w where w.id = :walkId")
+                .setParameter("walkId", walkId)
+                .getSingleResult();
+
+        return rm.getPingList();
+    }
 }
