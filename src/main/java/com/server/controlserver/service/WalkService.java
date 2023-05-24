@@ -211,6 +211,7 @@ public class WalkService {
 
         System.out.println("구역 내 총 Ping 객체 개수: " + count);
         System.out.println("Ping이 10개 이상 밀집된 구역 : " + hotPlace);
+        // hotPlace리스트의 각 객체에서 위도,경도 + 0.001 (100m)를 더한 범위를 말한다.
         return hotPlace;
     }
 }
