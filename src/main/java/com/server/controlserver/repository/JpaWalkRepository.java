@@ -45,6 +45,15 @@ public class JpaWalkRepository implements WalkRepository{
     }
 
     @Override
+    public List<Walk> findAllByPetId(Long petId) {
+        List<Walk> walkList = em.createQuery("select w from Walk w where w.pet.id = :petId", Walk.class)
+                .setParameter("petId", petId)
+                .getResultList();
+
+        return walkList;
+    }
+
+    @Override
     public Optional<Walk> findByRoadMapId(Long id) {
         Walk result = em.createQuery("select w from Walk w where w.roadMap.id = :id", Walk.class)
                 .setParameter("id",id)

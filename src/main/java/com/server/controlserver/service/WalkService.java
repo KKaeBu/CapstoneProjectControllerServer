@@ -82,9 +82,22 @@ public class WalkService {
         return walkResponseDto;
     }
 
-    public List<Walk> findAllByPetId(Long petId){
-        Pet pet = petRepository.findById(petId).get();
-        return pet.getWalkList();
+    public List<WalkResponseDto> findAllByPetId(Long petId){
+        List<Walk> walkList = walkRepository.findAllByPetId(petId);
+        List<WalkResponseDto> wrdList = new ArrayList<>();
+
+        for(Walk w : walkList) {
+            WalkResponseDto wrd = new WalkResponseDto(
+                    w.getStartPoint(),
+                    w.getEndPoint(),
+                    w.getRoadMap(),
+                    w.getActivity(),
+                    w.getWalkDate()
+            );
+            wrdList.add(wrd);
+        }
+
+        return wrdList;
     }
 
     public Optional<Walk> findById( Long walkId){
@@ -93,7 +106,7 @@ public class WalkService {
 
     public WalkResponseDto findByLastestWalk(Long petId) {
         Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
-        System.out.println("lastestWalk: " + lastestWalk.);
+//        System.out.println("lastestWalk: " + lastestWalk.);
 
         return new WalkResponseDto(
                 lastestWalk.getStartPoint(),
