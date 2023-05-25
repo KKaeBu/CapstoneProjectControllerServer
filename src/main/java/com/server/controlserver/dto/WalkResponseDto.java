@@ -6,13 +6,11 @@ import com.server.controlserver.domain.Pet;
 import com.server.controlserver.domain.Ping;
 import com.server.controlserver.domain.RoadMap;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
+@Getter
 @Data
 @Builder
 @NoArgsConstructor

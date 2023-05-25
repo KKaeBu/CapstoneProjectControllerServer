@@ -18,4 +18,5 @@ public interface WalkRepository {
     Optional<Walk> findByRoadMapId(Long id); //이름으로 찾아서 반환
     Optional<Walk> lastestWalkFindByPetId(Long petId);
     List<Walk> findAll(); //모든 회원 반환
+    List<Ping> coordsListFindByWalkId(Long walkId);
 }

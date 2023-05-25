@@ -29,6 +29,7 @@ public class WalkController {
         this.pingList = new ConcurrentHashMap<String, List<PingRequestDto>>();
     }
 
+    // 산책 종료시 새로운 산책 데이터 생성
     @PostMapping("/api/pets/{petId}/walks")
     @ResponseBody
     public ResponseEntity<WalkResponseDto> walkEnd(@PathVariable Long petId, @RequestBody WalkRequestDto walkRequestDto) {
@@ -95,6 +96,12 @@ public class WalkController {
         }else{
             return new ResponseEntity<>("삭제에 실패했습니다.",HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping("/api/walks/{walkId}/coords")
+    @ResponseBody
+    public ResponseEntity<String> getCoordsList(@PathVariable Long walkId){
+        return new ResponseEntity<>(walkService.getCoordsList(walkId), HttpStatus.OK);
     }
 
     // *********** 산책로 ***********

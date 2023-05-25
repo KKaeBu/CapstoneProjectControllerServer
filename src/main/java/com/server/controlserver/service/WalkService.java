@@ -104,9 +104,9 @@ public class WalkService {
         return walkRepository.findById(walkId);
     }
 
+    // 가장 최근 산책로 가져오기
     public WalkResponseDto findByLastestWalk(Long petId) {
         Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
-//        System.out.println("lastestWalk: " + lastestWalk.);
 
         return new WalkResponseDto(
                 lastestWalk.getStartPoint(),
@@ -138,5 +138,13 @@ public class WalkService {
         }else{
             return false;
         }
+    }
+
+    public String getCoordsList(Long walkId){
+        List<Ping> pl = walkRepository.coordsListFindByWalkId(walkId);
+
+        // 받아온 산책 핑 리스트 처리 과정이 필요 (리턴값도 변경해야함)
+
+        return pl.toString();
     }
 }
