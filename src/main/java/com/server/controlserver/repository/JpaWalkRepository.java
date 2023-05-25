@@ -5,7 +5,6 @@ import com.server.controlserver.dto.WalkResponseDto;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,9 +32,8 @@ public class JpaWalkRepository implements WalkRepository{
     }
 
     @Override
-    public Walk delete(Walk walk){
+    public void delete(Walk walk){
         em.remove(walk);
-        return walk;
     }
 
     @Override
@@ -56,9 +54,26 @@ public class JpaWalkRepository implements WalkRepository{
     @Override
     public Optional<Walk> findByRoadMapId(Long id) {
         Walk result = em.createQuery("select w from Walk w where w.roadMap.id = :id", Walk.class)
-                .setParameter("id",id)
+                .setParameter("road_map",id)
                 .getSingleResult();
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public List<Walk> findByPetId(Long petId) {
+        List<Walk> result = em.createQuery("select w from Walk w where w.pet.id = :petId", Walk.class)
+                .setParameter("petId",petId)
+                .getResultList();
+        return result;
+    }
+
+    @Override
+    public List<Walk> findAll() {
+//        List<Walk> result = em.createQuery("select w from Walk w where w.pet.id != :petId", Walk.class)
+        List<Walk> result = em.createQuery("select w from Walk w", Walk.class)
+//                .setParameter("petId",petId)
+                .getResultList();
+        return result;
     }
 
     @Override
@@ -68,16 +83,7 @@ public class JpaWalkRepository implements WalkRepository{
                 .setMaxResults(1) // 한개만 가져오도록 지정
                 .getSingleResult();
 
-
         return Optional.ofNullable(lastestWalk);
-
-    }
-
-    @Override
-    public List<Walk> findAll() {
-        List<Walk> result = em.createQuery("select w from Walk w", Walk.class)
-                .getResultList();
-        return result;
     }
 
     @Override
@@ -88,4 +94,6 @@ public class JpaWalkRepository implements WalkRepository{
 
         return rm.getPingList();
     }
+
+
 }

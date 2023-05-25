@@ -2,8 +2,9 @@ package com.server.controlserver.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jdk.jfr.Timestamp;
 import lombok.*;
-
+import org.hibernate.annotations.CreationTimestamp;
 import java.util.Date;
 
 @Getter
@@ -34,5 +35,6 @@ public class Walk {
     @JoinColumn(name = "activity")
     private Activity activity;
     @Column(name = "walk_date")
+    @CreationTimestamp
     private Date walkDate;
 }

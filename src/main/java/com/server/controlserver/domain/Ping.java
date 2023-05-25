@@ -29,6 +29,6 @@ public class Ping {
     @Column(nullable = false)
     private double altitude; //고도
     @Column(name = "create_time", nullable = false)
-//    @CreationTimestamp
+    @CreationTimestamp
     private Date createTime;
 }

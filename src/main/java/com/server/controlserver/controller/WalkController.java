@@ -5,6 +5,7 @@ import com.server.controlserver.domain.Walk;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
 import com.server.controlserver.dto.WalkResponseDto;
+import com.server.controlserver.service.Coordinate;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -98,10 +99,23 @@ public class WalkController {
         }
     }
 
+
     @GetMapping("/api/walks/{walkId}/coords")
     @ResponseBody
-    public ResponseEntity<String> getCoordsList(@PathVariable Long walkId){
+    public ResponseEntity<String> getCoordsList(@PathVariable Long walkId) {
         return new ResponseEntity<>(walkService.getCoordsList(walkId), HttpStatus.OK);
+    }
+
+    // HotPlace 테스트용
+    @GetMapping("/api/hotplace/test")
+    @ResponseBody
+    public ResponseEntity<List<Coordinate>> findHotPlaceTest(){
+        List<Coordinate> hotPlaceList= walkService.findHotPlace();
+        if(!hotPlaceList.isEmpty()){
+            return new ResponseEntity<List<Coordinate>>(hotPlaceList, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<List<Coordinate>>(hotPlaceList,HttpStatus.NO_CONTENT);
+        }
     }
 
     // *********** 산책로 ***********
