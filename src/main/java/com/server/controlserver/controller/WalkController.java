@@ -55,7 +55,7 @@ public class WalkController {
     }
 
     // 특정 반려동물의 산책 모두 가져오기
-    @GetMapping("/api/pets/{petId}/walks/")
+    @GetMapping("/api/pets/{petId}/walks")
     @ResponseBody
     public ResponseEntity<List<WalkResponseDto>> getAllWalk(@PathVariable Long petId){
         return new ResponseEntity<>(walkService.findAllByPetId(petId),HttpStatus.OK);
