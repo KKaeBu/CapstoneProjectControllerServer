@@ -255,8 +255,19 @@ public class WalkService {
         setPingMap(allWalkList, coordMap);
 
         // 메인 로직
+        // 모든 핑 중 좌표 평면의 사각형 4개의 꼭짓점을 찾음
+        HashMap<String, Object> rectVertex = findRectVertex(coordMap);
+        // 핫스팟 지정 범위 areaN (0.001 = 100m)
+        double areaN = 0.001;
+        // 4개의 꼭짓점 좌표와 핫스팟 범위 크기를 바탕으로하는 사각형의 바둑판(좌표평면)을 만든다.
+        // 확인용 출력
+        for(String k : rectVertex.keySet()){
+            System.out.println("key: " + k + ", value: " + rectVertex.get(k).toString());
+        }
 
-
+        // 전체 핑 base 핫스팟 찾기 (데이터 수가 적으면 얘로)
+        // 전체 핑 중 머문시간이 긴 핑 base 핫스팟 찾기 (원래 이게 정석)
+        // 각 강아지별 핫스팟 찾기 (만드는김에 추가용)
 
         // 코드 끝난 시간
         double end = System.currentTimeMillis();
@@ -267,7 +278,6 @@ public class WalkService {
 
         return coordMap;
     }
-
 
 
 
@@ -370,5 +380,63 @@ public class WalkService {
         Long seconds = duration.getSeconds() % 60;
 
         return seconds;
+    }
+
+    /**
+     * 공간 좌표를 좌표 평면상에 옮기면서
+     * 가장 큰 좌표와 가장 작은 좌표를 기준으로 생기는
+     * 사각형의 4 꼭짓점을 반환해준다.
+     * 단, 이때 가장 작은 좌표는 소수점 둘째 자리에서 내림 (ex. 37.200000)
+     * 가장 큰 좌표는 소수점 둘째 짜리에서 반올림 (ex. 37.500000)
+     * */
+    public HashMap<String, Object> findRectVertex(HashMap<String, List<Coord>> coordMap) {
+        HashMap<String, Object> verTex = new HashMap<>(); // 4 꼭짓점의 좌표
+
+        double minLat = Double.MAX_VALUE; // 가장 작은 latitude 값 (x좌표)
+        double minLng = Double.MAX_VALUE; // 가장 작은 longitude 값 (y좌표)
+        double maxLat = Double.MIN_VALUE; // 가장 큰 latitude 값 (x좌표)
+        double maxLng = Double.MIN_VALUE; // 가장 큰 longitude 값 (y좌표)
+
+        for(String key : coordMap.keySet()){
+            for(Coord c : coordMap.get(key)){
+                double latitude = c.getLatitude();
+                double longitude =  c.getLongitude();
+
+                // 가장 작은 위도(latitude)와 경도(longitude) 업데이트
+                minLat = Math.min(minLat, latitude);
+                minLng = Math.min(minLng, longitude);
+
+                // 가장 큰 위도(latitude)와 경도(longitude) 업데이트
+                maxLat = Math.max(maxLat, latitude);
+                maxLng = Math.max(maxLng, longitude);
+
+            }
+        }
+
+        // 최소, 최대 좌표 꼭짓점 값 가공(내림, 올림)
+        minLat = Math.floor(minLat*10)/10.0; // 소수점 둘재짜리 내림
+        minLng = Math.floor(minLng*10)/10.0; // 소수점 둘째자리 내림
+        maxLat = Math.ceil(maxLat*10)/10.0; // 소수점 둘째자리 올림
+        maxLng = Math.ceil(maxLng*10)/10.0; // 소수점 둘째자리 올림
+
+        // 최소,최대 좌표값을 활용해 4 꼭짓점 좌표 객체 생성
+        Coordinate minminCoord = new Coordinate(minLat, minLng); // (0,0)
+        Coordinate maxminCoord = new Coordinate(maxLat, minLng); // (n,0)
+        Coordinate maxmaxCoord = new Coordinate(maxLat, maxLng); // (n,n)
+        Coordinate minmaxCoord = new Coordinate(minLat, maxLng); // (0,n)
+
+        // latitude, longitude 범위 크기 구하기
+        int latSize = (int)Math.round((maxLat*10 - minLat*10));
+        int lngSize = (int)Math.round((maxLng*10 - minLng*10));
+
+        // 생성된 꼭짓점 좌표 객체를 해쉬맵에 넣기
+        verTex.put("minminCoord", minminCoord);
+        verTex.put("maxminCoord", maxminCoord);
+        verTex.put("maxmaxCoord", maxmaxCoord);
+        verTex.put("minmaxCoord", minmaxCoord);
+        verTex.put("latSize", latSize);
+        verTex.put("lngSize", lngSize);
+
+        return verTex;
     }
 }
