@@ -47,4 +47,13 @@ public class JpaPetRepository implements PetRepository{
             .getResultList();
         return result;
     } //모든 회원 반환
+
+    @Override
+    public Long findHighestId() {
+        Pet pet = em.createQuery("select p from Pet p order by p.id desc ", Pet.class)
+                .setMaxResults(1)
+                .getSingleResult();
+
+        return pet.getId();
+    }
 }

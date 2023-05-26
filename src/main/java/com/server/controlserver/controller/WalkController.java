@@ -5,6 +5,7 @@ import com.server.controlserver.domain.Walk;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
 import com.server.controlserver.dto.WalkResponseDto;
+import com.server.controlserver.service.Coord;
 import com.server.controlserver.service.Coordinate;
 import com.server.controlserver.service.WalkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -115,6 +117,17 @@ public class WalkController {
             return new ResponseEntity<List<Coordinate>>(hotPlaceList, HttpStatus.OK);
         }else{
             return new ResponseEntity<List<Coordinate>>(hotPlaceList,HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @GetMapping("/api/walks/hotspot")
+    @ResponseBody
+    public ResponseEntity<HashMap<String, List<Coord>>> findHotSpot(){
+        HashMap<String, List<Coord>> hotSpotList= walkService.findHotSpot();
+        if(!hotSpotList.isEmpty()){
+            return new ResponseEntity<>(hotSpotList, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(hotSpotList,HttpStatus.NO_CONTENT);
         }
     }
 

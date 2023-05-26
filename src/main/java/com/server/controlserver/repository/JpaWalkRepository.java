@@ -69,10 +69,9 @@ public class JpaWalkRepository implements WalkRepository{
 
     @Override
     public List<Walk> findAll() {
-//        List<Walk> result = em.createQuery("select w from Walk w where w.pet.id != :petId", Walk.class)
         List<Walk> result = em.createQuery("select w from Walk w", Walk.class)
-//                .setParameter("petId",petId)
                 .getResultList();
+
         return result;
     }
 

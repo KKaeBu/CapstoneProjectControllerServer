@@ -1,6 +1,7 @@
 package com.server.controlserver.service;
 
 import com.server.controlserver.domain.*;
+import com.server.controlserver.dto.PetResponseDto;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
 import com.server.controlserver.dto.WalkResponseDto;
@@ -9,9 +10,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -121,7 +124,7 @@ public class WalkService {
         return walkRepository.findById(walkId);
     }
 
-    // 가장 최근 산책로 가져오기
+    /** 가장 최근 산책로 가져오기 */
     public WalkResponseDto findByLastestWalk(Long petId) {
         Walk lastestWalk = walkRepository.lastestWalkFindByPetId(petId).get();
 
@@ -171,8 +174,11 @@ public class WalkService {
 
         // 모든 Ping 객체를 반복하면서 가장 작은/큰 위도와 경도를 찾음
         for (Ping ping : allPingList) {
-            double latitude = ping.getLatitude();
-            double longitude = ping.getLongitude();
+            if(ping.getAltitude() == 5) //에뮬레이터 위치 배제
+                continue;
+
+            double latitude = coordFloor6(ping.getLatitude());
+            double longitude =  coordFloor6(ping.getLongitude());
 
             // 가장 작은 위도(latitude)와 경도(longitude) 업데이트
             minLatitude = Math.min(minLatitude, latitude);
@@ -197,27 +203,30 @@ public class WalkService {
         // 구역 내의 100m 간격으로 Ping 객체의 개수를 세는 변수
         int count = 0;
 
+        // 인기 구역 지정 범위 areaN (0.001 = 100m)
+        double areaN = 0.0005;
+
         // 인기 구역의 위도, 경도를 저장할 빈 List
         List<Coordinate> hotPlace = new ArrayList<>();
 
         // 구역을 100m * 100m 간격으로 나누어 탐색
-        for (double lat = bottomLeft.getLatitude(); lat <= topRight.getLatitude(); lat += 0.001) {
-            for (double lng = bottomLeft.getLongitude(); lng <= topRight.getLongitude(); lng += 0.001) {
+        for (double lat = bottomLeft.getLatitude(); lat <= topRight.getLatitude(); lat += areaN) {
+            for (double lng = bottomLeft.getLongitude(); lng <= topRight.getLongitude(); lng += areaN) {
                 // 현재 좌표 (lat, lng)에 해당하는 구역 내에 속하는 Ping 객체 개수를 센다
                 int subCount = 0;
                 for (Ping ping : allPingList) {
                     double pingLat = ping.getLatitude();
                     double pingLng = ping.getLongitude();
-                    if (pingLat >= lat && pingLat < lat + 0.001 && pingLng >= lng && pingLng < lng + 0.001) {
+                    if (pingLat >= lat && pingLat < lat + areaN && pingLng >= lng && pingLng < lng + areaN) {
                         subCount++;
                     }
                 }
                 count += subCount;
                 if(subCount > 0) {
-                    System.out.println("구역 내 (" + lat + ", " + lng + ") 위치의 Ping 객체 개수: " + subCount);
+                    System.out.println("구역 내 (" + coordFloor6(lat) + ", " + coordFloor6(lng) + ") 위치의 Ping 객체 개수: " + subCount);
                 }
                 if(subCount > 10){
-                    Coordinate hotPing = new Coordinate(lat,lng);
+                    Coordinate hotPing = new Coordinate(coordFloor6(lat),coordFloor6(lng));
                     hotPlace.add(hotPing);
                 }
             }
@@ -227,5 +236,139 @@ public class WalkService {
         System.out.println("Ping이 10개 이상 밀집된 구역 : " + hotPlace);
         // hotPlace리스트의 각 객체에서 위도,경도 + 0.001 (100m)를 더한 범위를 말한다.
         return hotPlace;
+    }
+
+    /**
+    핫 스팟 좌표리스트를 반환해주는 함수 (hotplace랑 같은 기능)
+    근데 이건 머문 시간 계산
+     */
+    public HashMap<String, List<Coord>> findHotSpot() {
+        //코드 시작 시간
+        double start = System.currentTimeMillis();
+
+        // 모든 산책 리스트를 받아온다.
+        List<Walk> allWalkList = walkRepository.findAll();
+
+        // 각 펫 별 산책로를 저장 (key = petId, value = Coord 리스트)
+        HashMap<String, List<Coord>> coordMap = new HashMap<>();
+        // 각 산책로의 핑 리스트를 coord 리스트로 변환후 petId로 해쉬맵에 연결해서 저장
+        setPingMap(allWalkList, coordMap);
+
+        // 메인 로직
+
+
+
+        // 코드 끝난 시간
+        double end = System.currentTimeMillis();
+        // 걸린 시간
+        double duration = (end - start)/1000;
+
+        System.out.println("코드 걸린 시간: " + duration);
+
+        return coordMap;
+    }
+
+
+
+
+    /**
+    모든 산책리스트에서 산책로안에있는 pingList만 뽑아서
+    해당되는 pet의 petId와 연결하여 HashMap에 저장
+    (key: petId, value: List<Ping>)
+     */
+    private void setPingMap(List<Walk> allWalkList, HashMap<String, List<Coord>> coordMap) {
+        //모든 산책 리스트에서 Ping의 개수가 적은걸 걸름 (에뮬레이터때문에)
+        for(Walk w : allWalkList) {
+            // 에뮬레이터 데이터는 빼버림1
+            if(w.getStartPoint().getId() == w.getEndPoint().getId())
+                continue;
+
+            // 정리된 산책 리스트에서 각 산책의 petId
+            // 즉, 각자 다른 강아지들을 산책로 리스트의 index 값으로 쓰고
+            // 각각의 value에는 coord 리스트를 추가한다.
+            String petId = w.getPet().getId().toString();
+            // 각 산책의 펫 데이터 (사용자에게 반환해줄거기에 ResponseDto 사용)
+            PetResponseDto pet = new PetResponseDto(
+                    w.getPet().getId(),
+                    w.getPet().getName(),
+                    w.getPet().getAge(),
+                    w.getPet().getSex(),
+                    w.getPet().getWeight(),
+                    w.getPet().getIsNeutered(),
+                    w.getPet().getSpecies()
+            );
+
+
+            List<Ping> pingList = w.getRoadMap().getPingList(); // 해당 산책의 산책로의 핑리스트
+            List<Coord> coordList = new ArrayList<>(); // 핑 리스트를 coord로 변환후 저장할 coord 리스트
+
+            for(int i = 0; i < pingList.size(); i++) {
+                Coord coord;
+                Ping curPing = pingList.get(i);
+
+                //에뮬레이터 데이터 거르기2
+                if(curPing.getAltitude() == Integer.valueOf(5).doubleValue())
+                    continue;
+
+                if(i == 0) {
+                    // 첫번째 핑의 경우 시작 지점이므로 해당 핑에서 머문 시간은 0초
+                    coord = new Coord(coordFloor6(
+                            curPing.getLatitude()),
+                            coordFloor6(curPing.getLongitude()),
+                            Integer.valueOf(0).longValue(),
+                            pet
+                    );
+                }else{
+                    coord = new Coord(
+                            coordFloor6(curPing.getLatitude()),
+                            coordFloor6(curPing.getLongitude()),
+                            getCalcStayTime(pingList.get(i-1).getCreateTime(), curPing.getCreateTime()),
+                            pet
+                    );
+                }
+                coordList.add(coord);
+            }
+
+            if(!coordMap.containsKey(petId)){ // 해당 키가 해쉬맵에 없다면 (처음 넣는 경우)
+                if(!coordList.isEmpty()) //에뮬 데이터 거르기3
+                    coordMap.put(petId, coordList);
+            }else{ // 해당 키가 이미 있을 경우
+                // addAll은 각 요소를 해당 배열의 뒤에 이어서 넣어줌
+                coordMap.get(petId).addAll(coordList);
+            }
+        }
+    }
+
+    /** 위도, 경도, 고도 등의 값을 소수점 6자리까지만 나타내도록 잘라주는 함수 */
+    public double coordFloor6(double coord) {
+        double floorCoord = Math.floor(coord*1000000) / 1000000.0;
+
+        // 소수점 계산은 정확하게 안나오기 때문에
+        // BigDecimal을 사용함
+        BigDecimal result = new BigDecimal(String.valueOf(floorCoord));
+        BigDecimal correctionValue = new BigDecimal(String.valueOf(0.000001)); // 보정값
+
+        // 소수점 자리수가 6자리보다 적으면 보정값을 더해줌
+        if(result.scale() < 6)
+            return result.add(correctionValue).doubleValue(); //이런다고 원본 값이 바뀌진 않음 그래서 바로 리턴해줘야댐
+
+        // BigDecimal에서 double로 값을 꺼낼땐 doubleValue()를 사용
+        return result.doubleValue();
+
+    }
+
+    /** 두 날짜 사이의 시간차를 계산하여 이를 초 단위로 반환 */
+    public Long getCalcStayTime(Date preDate, Date curDate) {
+        // Date 타입의 두 날짜를 LocalDateTime으로 변경
+        LocalDateTime preLocalDateTime1 = preDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime curLocalDateTime2 = curDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+
+        // Duration을 사용해 두 날짜 사이의 시간차를 계산
+        Duration duration = Duration.between(preLocalDateTime1, curLocalDateTime2);
+
+        // Duration의 getSeconds를 사용해 두 날짜사이의 시간차를 로 반환
+        Long seconds = duration.getSeconds() % 60;
+
+        return seconds;
     }
 }

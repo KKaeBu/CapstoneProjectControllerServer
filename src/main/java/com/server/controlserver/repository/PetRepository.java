@@ -11,4 +11,5 @@ public interface PetRepository {
     Optional<Pet> findById(Long id); //id로 찾아서 반환
     Optional<Pet> findByName(String name); //이름으로 찾아서 반환
     List<Pet> findAll(); //모든 회원 반환
+    Long findHighestId(); //펫의 id 중 가장 높은 값을 반환
 }
