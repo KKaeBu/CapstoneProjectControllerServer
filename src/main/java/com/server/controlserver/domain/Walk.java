@@ -18,7 +18,7 @@ public class Walk {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "pet_id")
     private Pet pet;

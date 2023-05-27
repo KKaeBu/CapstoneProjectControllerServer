@@ -5,6 +5,7 @@ import com.server.controlserver.domain.Walk;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
 import com.server.controlserver.dto.WalkResponseDto;
+import com.server.controlserver.service.Board;
 import com.server.controlserver.service.Coord;
 import com.server.controlserver.service.Coordinate;
 import com.server.controlserver.service.WalkService;
@@ -122,9 +123,9 @@ public class WalkController {
 
     @GetMapping("/api/walks/hotspot")
     @ResponseBody
-    public ResponseEntity<HashMap<String, List<Coord>>> findHotSpot(){
-        HashMap<String, List<Coord>> hotSpotList= walkService.findHotSpot();
-        if(!hotSpotList.isEmpty()){
+    public ResponseEntity<Board> findHotSpot(){
+        Board hotSpotList= walkService.findHotSpot();
+        if(hotSpotList != null){
             return new ResponseEntity<>(hotSpotList, HttpStatus.OK);
         }else{
             return new ResponseEntity<>(hotSpotList,HttpStatus.NO_CONTENT);

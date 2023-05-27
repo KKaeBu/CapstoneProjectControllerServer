@@ -18,7 +18,7 @@ public class Ping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinColumn(name = "road_map_id")
     private RoadMap roadMap;

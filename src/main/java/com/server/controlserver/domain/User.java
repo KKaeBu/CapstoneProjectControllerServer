@@ -27,7 +27,7 @@ public class User {
     private String password; //비밀번호
     @Column(nullable = false)
     private String phone; //핸드폰번호
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "my_pet")
     private Pet myPet;//사용자의 반려동물
     @Column(name = "create_time", nullable = false)

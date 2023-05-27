@@ -242,7 +242,7 @@ public class WalkService {
     핫 스팟 좌표리스트를 반환해주는 함수 (hotplace랑 같은 기능)
     근데 이건 머문 시간 계산
      */
-    public HashMap<String, List<Coord>> findHotSpot() {
+    public Board findHotSpot() {
         //코드 시작 시간
         double start = System.currentTimeMillis();
 
@@ -254,16 +254,25 @@ public class WalkService {
         // 각 산책로의 핑 리스트를 coord 리스트로 변환후 petId로 해쉬맵에 연결해서 저장
         setPingMap(allWalkList, coordMap);
 
-        // 메인 로직
-        // 모든 핑 중 좌표 평면의 사각형 4개의 꼭짓점을 찾음
+        // =============== 메인 로직 ===============
+        // 모든 핑 중 좌표 평면의 사각형 4개의 꼭짓점을 찾음 + 필요한 값도 추가
         HashMap<String, Object> rectVertex = findRectVertex(coordMap);
-        // 핫스팟 지정 범위 areaN (0.001 = 100m)
-        double areaN = 0.001;
-        // 4개의 꼭짓점 좌표와 핫스팟 범위 크기를 바탕으로하는 사각형의 바둑판(좌표평면)을 만든다.
-        // 확인용 출력
-        for(String k : rectVertex.keySet()){
-            System.out.println("key: " + k + ", value: " + rectVertex.get(k).toString());
-        }
+
+        double areaN = 0.001; // 핫스팟 지정 범위 areaN (0.001 = 100m)
+        int areaN_int = 1000; // areaN이 정수가 될 수 있는 크기(각 좌표열 length에 곱해질값)
+
+        /*
+         * 4개의 꼭짓점 좌표와 핫스팟 범위 크기를 바탕으로하는 사각형의 바둑판(좌표평면)을 만든다.
+         * 바둑판의 인덱스 순서는 아래와 같다. (크기는 유동적)
+         * 16 17 18 19 20
+         * 11 12 13 14 15
+         * 6  7  8  9  10
+         * 1  2  3  4  5
+        * */
+        Board board = makeBoard(rectVertex, areaN, areaN_int);
+
+        // 모든 핑을 범위별로 나누어 보드의 해당하는 스팟에 넣음
+        classifyAllPings(board, rectVertex, coordMap, areaN, areaN_int);
 
         // 전체 핑 base 핫스팟 찾기 (데이터 수가 적으면 얘로)
         // 전체 핑 중 머문시간이 긴 핑 base 핫스팟 찾기 (원래 이게 정석)
@@ -275,8 +284,7 @@ public class WalkService {
         double duration = (end - start)/1000;
 
         System.out.println("코드 걸린 시간: " + duration);
-
-        return coordMap;
+        return board;
     }
 
 
@@ -426,17 +434,121 @@ public class WalkService {
         Coordinate minmaxCoord = new Coordinate(minLat, maxLng); // (0,n)
 
         // latitude, longitude 범위 크기 구하기
-        int latSize = (int)Math.round((maxLat*10 - minLat*10));
-        int lngSize = (int)Math.round((maxLng*10 - minLng*10));
+        int latLength = (int)Math.round((maxLat*10 - minLat*10));
+        int lngLength = (int)Math.round((maxLng*10 - minLng*10));
+        int rectArea = latLength * lngLength;
 
-        // 생성된 꼭짓점 좌표 객체를 해쉬맵에 넣기
+        // 생성된 꼭짓점 좌표 객체 및 필요 값들을 해쉬맵에 넣기
         verTex.put("minminCoord", minminCoord);
         verTex.put("maxminCoord", maxminCoord);
         verTex.put("maxmaxCoord", maxmaxCoord);
         verTex.put("minmaxCoord", minmaxCoord);
-        verTex.put("latSize", latSize);
-        verTex.put("lngSize", lngSize);
+        verTex.put("minLat", minLat);
+        verTex.put("minLng", minLng);
+        verTex.put("maxLat", maxLat);
+        verTex.put("maxLng", maxLng);
+        verTex.put("latLnegth_double", maxLat - minLat);
+        verTex.put("lngLength_double", maxLng - minLng);
+        verTex.put("latLength_int", latLength);
+        verTex.put("lngLength_int", lngLength);
+        verTex.put("rectArea", rectArea);
 
         return verTex;
+    }
+
+    /**
+     * 좌표 꼭지점으로 계산한 사각형의 크기를 바탕으로 바둑판(보드)를 만들어서 반환해줌
+     * */
+    public Board makeBoard(HashMap<String, Object> rectVertex, double areaN, int areaN_int) {
+        double width = Double.parseDouble(rectVertex.get("latLnegth_double").toString()); // 보드의 가로 길이
+        double height = Double.parseDouble(rectVertex.get("lngLength_double").toString()); // 보드의 세로 길이
+        int boardSize = Integer.parseInt(rectVertex.get("rectArea").toString()) * (int)Math.pow(areaN_int, 2); // 바둑판에 있는 공간의 총 개수
+
+        return new Board(
+                boardSize,
+                width*areaN,
+                height*areaN,
+                areaN,
+                new HashMap<>()
+        );
+    }
+
+    /**
+     * 모든 핑을 보드의 각 스팟에 분류함
+     * */
+    public void classifyAllPings(Board board, HashMap<String, Object> rectVertex, HashMap<String, List<Coord>> coordMap, double areaN, int areaN_int) {
+        Collection<List<Coord>> list_coordList = coordMap.values(); // coordMap에서 모든 value값만 빼옴(즉, coordList 들만 빼옴)
+        List<Coord> allCoordList = new ArrayList<>(); // 모든 coord 리스트
+
+        // coordList들을 하나의 리스트에 담음
+        for(List<Coord> cl : list_coordList) {
+            allCoordList.addAll(cl);
+        }
+
+        /* !!주의 할 점!!
+        *  double, float 등 소수를 프로그래밍단에서 사칙연산 시행시
+        *  그 값이 제대로 나오지 않는 경우가 드물다
+        *  이를 해결하려면 BigDecimal을 써야함
+        *  하지만, 그러러면 매 계산시마다 각 값들을 변환해줘야함
+        *  그렇기에 여기서 범위 및 좌표 계산시에는 double 값들을
+        *  정수형으로 바꿔서 계산
+        *  */
+
+        // 사용되는 값들을 소수형 -> 정수형 변환
+        int minLat = (int)(Double.parseDouble(rectVertex.get("minLat").toString()) * 1000000);
+        int maxLat = (int)(Double.parseDouble(rectVertex.get("maxLat").toString()) * 1000000);
+        int minLng = (int)(Double.parseDouble(rectVertex.get("minLng").toString()) * 1000000);
+        int maxLng = (int)(Double.parseDouble(rectVertex.get("maxLng").toString()) * 1000000);
+        HashMap<String, Spot> spotList = board.getSpotList();
+
+        // 각 핑들을 보드 내의 해당하는 스팟에 집어넣음
+        for(Coord c : allCoordList) {
+            /* 어차피 해당 좌표들이 어떤 스팟에 들어가는지만
+            * 찾으면 되기에 각 좌표 값에 해당하는 최소 범위값을 찾음
+            * 스팟의 범위는 spotSize 값과 같으므로
+            * 해당 값을 기준으로 범위를 나눔
+            * */
+            int minRangeOfLat = (int)Math.floor(c.getLatitude()*areaN_int) * (1000000/areaN_int);
+            int minRangeOfLng = (int)Math.floor(c.getLongitude()*areaN_int) * (1000000/areaN_int);
+            
+            /* 해당 좌표가 기준위치(minLat, minLng)로 부터
+            * 스팟의 범위만큼 얼마나 떨어져 있는지를 판계산
+            * (이것이 인덱스의 위치 계산)
+            * */
+            int lat_spot_num = (maxLat - minLat) / areaN_int; // x축의 spot 개수
+            int lat_index = (minRangeOfLat - minLat) / areaN_int; // 좌표의 x 축에서의 index 위치
+            int lng_index = (minRangeOfLng - minLng) / areaN_int; // 좌표의 y 축에서의 index 위치
+            int spot_index = lat_index + (lng_index * lat_spot_num); // 좌표가 들어갈 spot의 번호
+
+            // 보드내의 spot_index에 해당하는 스팟에 좌표를 넣어줌
+            // (Key: spot_index, Value: Coord)
+            if(!spotList.containsKey(Integer.toString(spot_index))){ // 보드판에서 해당 spot이 빈 스팟일때
+                // 스팟 생성
+                Spot spot = new Spot(
+                        spot_index,
+                        areaN,
+                        areaN,
+                        Math.floor(c.getLatitude()*areaN_int) / (double)areaN_int,
+                        Math.ceil(c.getLatitude()*areaN_int) / (double)areaN_int,
+                        Math.floor(c.getLongitude()*areaN_int) / (double)areaN_int,
+                        Math.ceil(c.getLongitude()*areaN_int) / (double)areaN_int,
+                        new ArrayList<>()
+                        );
+                // 스팟의 좌표 리스트에 해당 좌표 추가
+                spot.getCoordList().add(c);
+                // 만들어진 스팟을 보드판의 위치하는 인덱스에 붙임
+                spotList.put(Integer.toString(spot_index), spot);
+            }else{ // 보드판에 해당 스팟이 이미 있을때
+                Spot spot = spotList.get(Integer.toString(spot_index));
+                spot.getCoordList().add(c);
+            }
+        }
+
+        // 보드판출력 확인용
+        HashMap<String, Spot> h = board.getSpotList();
+        for(Spot s : h.values()){
+            System.out.println("spotNum: " + s.getNumber() + ", 좌표 개수: " + s.getCoordList().size());
+        }
+
     }
 }
