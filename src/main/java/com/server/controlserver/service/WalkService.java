@@ -359,7 +359,8 @@ public class WalkService {
 
     /** 위도, 경도, 고도 등의 값을 소수점 6자리까지만 나타내도록 잘라주는 함수 */
     public double coordFloor6(double coord) {
-        double floorCoord = Math.floor(coord*1000000) / 1000000.0;
+        double floorCoord = DoubleCalc.div(Math.floor(coord*1000000), 1000000.0, 6);
+
 
         // 소수점 계산은 정확하게 안나오기 때문에
         // BigDecimal을 사용함
@@ -422,10 +423,12 @@ public class WalkService {
         }
 
         // 최소, 최대 좌표 꼭짓점 값 가공(내림, 올림)
-        minLat = Math.floor(minLat*10)/10.0; // 소수점 둘재짜리 내림
-        minLng = Math.floor(minLng*10)/10.0; // 소수점 둘째자리 내림
-        maxLat = Math.ceil(maxLat*10)/10.0; // 소수점 둘째자리 올림
-        maxLng = Math.ceil(maxLng*10)/10.0; // 소수점 둘째자리 올림
+        minLat = DoubleCalc.div(Math.floor(minLat*10), 10.0, 1); // 소수점 둘재짜리 내림
+        minLng = DoubleCalc.div(Math.floor(minLng*10), 10.0, 1); // 소수점 둘째자리 내림
+        maxLat = DoubleCalc.div(Math.ceil(maxLat*10), 10.0, 1); // 소수점 둘째자리 올림
+        maxLng = DoubleCalc.div(Math.ceil(maxLng*10), 10.0, 1); // 소수점 둘째자리 올림
+
+
 
         // 최소,최대 좌표값을 활용해 4 꼭짓점 좌표 객체 생성
         Coordinate minminCoord = new Coordinate(minLat, minLng); // (0,0)
@@ -447,8 +450,8 @@ public class WalkService {
         verTex.put("minLng", minLng);
         verTex.put("maxLat", maxLat);
         verTex.put("maxLng", maxLng);
-        verTex.put("latLnegth_double", maxLat - minLat);
-        verTex.put("lngLength_double", maxLng - minLng);
+        verTex.put("latLnegth_double", DoubleCalc.sub(maxLat, minLat));
+        verTex.put("lngLength_double", DoubleCalc.sub(maxLng, minLng));
         verTex.put("latLength_int", latLength);
         verTex.put("lngLength_int", lngLength);
         verTex.put("rectArea", rectArea);
@@ -466,8 +469,8 @@ public class WalkService {
 
         return new Board(
                 boardSize,
-                width*areaN,
-                height*areaN,
+                width,
+                height,
                 areaN,
                 new HashMap<>()
         );
@@ -510,9 +513,9 @@ public class WalkService {
             * */
             int minRangeOfLat = (int)Math.floor(c.getLatitude()*areaN_int) * (1000000/areaN_int);
             int minRangeOfLng = (int)Math.floor(c.getLongitude()*areaN_int) * (1000000/areaN_int);
-            
+
             /* 해당 좌표가 기준위치(minLat, minLng)로 부터
-            * 스팟의 범위만큼 얼마나 떨어져 있는지를 판계산
+            * 스팟의 범위만큼 얼마나 떨어져 있는지를 계산
             * (이것이 인덱스의 위치 계산)
             * */
             int lat_spot_num = (maxLat - minLat) / areaN_int; // x축의 spot 개수
@@ -524,14 +527,25 @@ public class WalkService {
             // (Key: spot_index, Value: Coord)
             if(!spotList.containsKey(Integer.toString(spot_index))){ // 보드판에서 해당 spot이 빈 스팟일때
                 // 스팟 생성
+                double spot_min_lat_range =  DoubleCalc.div(Math.floor(c.getLatitude()*areaN_int), (double)areaN_int, 3);
+                double spot_max_lat_range =  DoubleCalc.div(Math.ceil(c.getLatitude()*areaN_int), (double)areaN_int, 3);
+                double spot_min_lng_range =  DoubleCalc.div(Math.floor(c.getLongitude()*areaN_int), (double)areaN_int, 3);
+                double spot_max_lng_range =  DoubleCalc.div(Math.ceil(c.getLongitude()*areaN_int), (double)areaN_int, 3);
+
+
+                double correctionValue = DoubleCalc.div(areaN, 2.0, 4); // 중심값으로 만들어줄 보정값 (areaN값의 절반값)
+
                 Spot spot = new Spot(
                         spot_index,
+                        false,
                         areaN,
                         areaN,
-                        Math.floor(c.getLatitude()*areaN_int) / (double)areaN_int,
-                        Math.ceil(c.getLatitude()*areaN_int) / (double)areaN_int,
-                        Math.floor(c.getLongitude()*areaN_int) / (double)areaN_int,
-                        Math.ceil(c.getLongitude()*areaN_int) / (double)areaN_int,
+                        coordFloor6(spot_min_lat_range + correctionValue),
+                        coordFloor6(spot_min_lng_range + correctionValue),
+                        spot_min_lat_range,
+                        spot_max_lat_range,
+                        spot_min_lng_range,
+                        spot_max_lng_range,
                         new ArrayList<>()
                         );
                 // 스팟의 좌표 리스트에 해당 좌표 추가
@@ -547,8 +561,51 @@ public class WalkService {
         // 보드판출력 확인용
         HashMap<String, Spot> h = board.getSpotList();
         for(Spot s : h.values()){
-            System.out.println("spotNum: " + s.getNumber() + ", 좌표 개수: " + s.getCoordList().size());
+            if(s.getCoordList().size() >= 30)
+                s.setHot(true);
+            System.out.println("spotNum: " + s.getNumber() + ", 좌표 개수: " + s.getCoordList().size() +", isHot: " + s.isHot());
         }
+
+    }
+
+    /** double형의 사칙 연산을 도와주는 클래스 */
+    class DoubleCalc {
+        /** double 더하기 a + b */
+        public static double add(double a, double b){
+            BigDecimal d1 = new BigDecimal(String.valueOf(a));
+            BigDecimal d2 = new BigDecimal(String.valueOf(b));
+
+            double result = d1.add(d2).doubleValue();
+            return result;
+        }
+
+        /** double 빼기 a - b */
+        public static double sub(double a, double b){
+            BigDecimal d1 = new BigDecimal(String.valueOf(a));
+            BigDecimal d2 = new BigDecimal(String.valueOf(b));
+
+            double result = d1.subtract(d2).doubleValue();
+            return result;
+        }
+
+        /** double 곱하기 a x b */
+        public static double mul(double a, double b){
+            BigDecimal d1 = new BigDecimal(String.valueOf(a));
+            BigDecimal d2 = new BigDecimal(String.valueOf(b));
+
+            double result = d1.multiply(d2).doubleValue();
+            return result;
+        }
+
+        /** double 나누기 a / b, 나타낼 소수점 자리수 포함*/
+        public static double div(double a, double b, int num){
+            BigDecimal d1 = new BigDecimal(String.valueOf(a));
+            BigDecimal d2 = new BigDecimal(String.valueOf(b));
+
+            double result = d1.divide(d2, num, BigDecimal.ROUND_DOWN).doubleValue();
+            return result;
+        }
+
 
     }
 }
