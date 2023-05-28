@@ -5,10 +5,7 @@ import com.server.controlserver.domain.Walk;
 import com.server.controlserver.dto.PingRequestDto;
 import com.server.controlserver.dto.WalkRequestDto;
 import com.server.controlserver.dto.WalkResponseDto;
-import com.server.controlserver.service.Board;
-import com.server.controlserver.service.Coord;
-import com.server.controlserver.service.Coordinate;
-import com.server.controlserver.service.WalkService;
+import com.server.controlserver.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -123,8 +120,8 @@ public class WalkController {
 
     @GetMapping("/api/walks/hotspot")
     @ResponseBody
-    public ResponseEntity<Board> findHotSpot(){
-        Board hotSpotList= walkService.findHotSpot();
+    public ResponseEntity<List<Spot>> findHotSpot(){
+        List<Spot> hotSpotList= walkService.findHotSpot();
         if(hotSpotList != null){
             return new ResponseEntity<>(hotSpotList, HttpStatus.OK);
         }else{

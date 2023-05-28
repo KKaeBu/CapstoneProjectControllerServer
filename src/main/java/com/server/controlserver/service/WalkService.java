@@ -242,7 +242,7 @@ public class WalkService {
     핫 스팟 좌표리스트를 반환해주는 함수 (hotplace랑 같은 기능)
     근데 이건 머문 시간 계산
      */
-    public Board findHotSpot() {
+    public List<Spot> findHotSpot() {
         //코드 시작 시간
         double start = System.currentTimeMillis();
 
@@ -254,7 +254,7 @@ public class WalkService {
         // 각 산책로의 핑 리스트를 coord 리스트로 변환후 petId로 해쉬맵에 연결해서 저장
         setPingMap(allWalkList, coordMap);
 
-        // =============== 메인 로직 ===============
+        // ========================= 메인 로직 =========================
         // 모든 핑 중 좌표 평면의 사각형 4개의 꼭짓점을 찾음 + 필요한 값도 추가
         HashMap<String, Object> rectVertex = findRectVertex(coordMap);
 
@@ -274,9 +274,14 @@ public class WalkService {
         // 모든 핑을 범위별로 나누어 보드의 해당하는 스팟에 넣음
         classifyAllPings(board, rectVertex, coordMap, areaN, areaN_int);
 
-        // 전체 핑 base 핫스팟 찾기 (데이터 수가 적으면 얘로)
+        // < ---- 아래의 값 중 원하는 방법의 값으로 반환해주면 됨 ----  >
+        // 전체 좌표 base 핫스팟 찾기 (데이터 수가 적으면 얘로)
+        List<Spot> hotSpot_all = findHotSpotByAllCoords(board);
         // 전체 핑 중 머문시간이 긴 핑 base 핫스팟 찾기 (원래 이게 정석)
+        List<Spot> hotSpot = findHotSpotByStayTime(board);
         // 각 강아지별 핫스팟 찾기 (만드는김에 추가용)
+
+        // ==============================================================
 
         // 코드 끝난 시간
         double end = System.currentTimeMillis();
@@ -284,9 +289,9 @@ public class WalkService {
         double duration = (end - start)/1000;
 
         System.out.println("코드 걸린 시간: " + duration);
-        return board;
-    }
 
+        return hotSpot_all;
+    }
 
 
     /**
@@ -558,14 +563,61 @@ public class WalkService {
             }
         }
 
-        // 보드판출력 확인용
-        HashMap<String, Spot> h = board.getSpotList();
-        for(Spot s : h.values()){
-            if(s.getCoordList().size() >= 30)
+    }
+
+    /** 모든 좌표를 베이스로해서 각 스팟에 일정 좌표 이상 있으면 핫스팟으로 표시*/
+    private List<Spot> findHotSpotByAllCoords(Board board) {
+        HashMap<String, Spot> sl = board.getSpotList(); // 보드에서 spot 리스트를 뺴옴
+        List<Spot> hotSpotList = new ArrayList<>(); // 핫스팟만 저장할 스팟 리스트
+        int hotSpot_condition = 30; // 핫스팟이 되기위한 조건 (스팟에 있는 좌표의 개수가 해당 수 이상)
+
+        for(Spot s : sl.values()){
+            if(s.getCoordList().size() >= hotSpot_condition) {// 스팟의 핑 개수가 조건 이상이면 핫플이라 판단
                 s.setHot(true);
+                hotSpotList.add(s);
+            }
+        }
+        System.out.println("findHotSpotByAllCoords 확인용 출력");
+        for(Spot s : hotSpotList){
             System.out.println("spotNum: " + s.getNumber() + ", 좌표 개수: " + s.getCoordList().size() +", isHot: " + s.isHot());
         }
 
+        return hotSpotList;
+    }
+
+    /** 모든 좌표를 베이스로 하되 각 좌표별 머문 시간을 확인하여
+     * 머문 시간이 일정 시간 이상인 좌표로만 핫스팟을 판별*/
+    private List<Spot> findHotSpotByStayTime(Board board) {
+        HashMap<String, Spot> sl = board.getSpotList(); // 보드에서 spot 리스트를 뺴옴
+        List<Spot> hotSpotList = new ArrayList<>(); // 핫스팟만 저장할 스팟 리스트
+        int stayTime_condition = 4; // 머문시간 조건, 한 좌표에 머문 시간이 해당 값 이상이어야함
+        int hotSpot_condition = 5; // 핫스팟이 되기 위한 조건, 해당 스팟에 stayTime_condition을 만족시키는 좌표의 개수가 해당 값 이상이어야함
+        int c_count = 0; // 해당 스팟에 stayTime_condition을 만족시키는 좌표의 개수
+
+        System.out.println("findHotSpotByStayTime 확인용 출력");
+        for(Spot s : sl.values()) {
+            //각 스팟의 모든 좌표 순회
+            for(Coord c : s.getCoordList()) {
+                // 각 좌표의 머문 시간이 조건을 만족하면 만족하는 좌표의 개수를 증가
+                if (c.getStayTime() >= stayTime_condition) c_count++;
+            }
+
+            // 해당 스팟에서 조건을 만족한 좌표의 개수가 핫스팟 조건을 충족한다면 해당 스팟을 핫스팟으로 인정 후 추가
+            if(c_count >= 5) {
+                s.setHot(true);
+                hotSpotList.add(s);
+            }
+
+            System.out.println("spotNum: " + s.getNumber() + ", c_cout: " + c_count);
+
+            c_count = 0; //카운트 초기화
+        }
+
+        for(Spot s : hotSpotList){
+            System.out.println("spotNum: " + s.getNumber() + ", 좌표 개수: " + s.getCoordList().size() +", isHot: " + s.isHot());
+        }
+
+        return hotSpotList;
     }
 
     /** double형의 사칙 연산을 도와주는 클래스 */
