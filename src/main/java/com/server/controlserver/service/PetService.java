@@ -10,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 @Service
 @Transactional
 public class PetService {
@@ -59,4 +63,30 @@ public class PetService {
         );
     }
 
+    public PetResponseDto findRandomPet(Long id){
+        List<Pet> pet = petRepository.findAll();
+        Long randomId = id;
+        Pet randomPet = new Pet();
+        boolean isFailed = true;
+
+        while (isFailed){
+            randomId = (long) (Math.random() * pet.size()); // 랜덤한 펫의 Id
+            System.out.println("새로 발급한 randomId " + randomId );
+            if(id != randomId) {
+                if(!petRepository.findById(randomId).isEmpty()) {
+                    randomPet = petRepository.findById(randomId).get();
+                    isFailed = false;
+                }
+            }
+        }
+        return new PetResponseDto(
+                randomPet.getId(),
+                randomPet.getName(),
+                randomPet.getAge(),
+                randomPet.getSex(),
+                randomPet.getWeight(),
+                randomPet.getIsNeutered(),
+                randomPet.getSpecies()
+        );
+    }
 }

@@ -8,11 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class PetController {
@@ -31,6 +27,15 @@ public class PetController {
         System.out.println("petRequestDto: " + petRequestDto);
         PetResponseDto newPet = petService.join(petRequestDto);
         return new ResponseEntity<PetResponseDto>(newPet, HttpStatus.CREATED);
+    }
+
+    // 본인 Pet 제외 랜덤 Pet 반환
+    @GetMapping("/api/otherPets/{Id}")
+    @ResponseBody
+    public ResponseEntity<PetResponseDto> findOtherPets(@PathVariable("Id")Long Id){
+        System.out.println("전달받은 petID : " + Id);
+        PetResponseDto otherPet = petService.findRandomPet(Id);
+        return new ResponseEntity<PetResponseDto>(otherPet,HttpStatus.OK);
     }
 
     /*

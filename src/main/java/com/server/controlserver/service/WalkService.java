@@ -242,7 +242,7 @@ public class WalkService {
     핫 스팟 좌표리스트를 반환해주는 함수 (hotplace랑 같은 기능)
     근데 이건 머문 시간 계산
      */
-    public List<Spot> findHotSpot() {
+    public Board findHotSpot() {
         //코드 시작 시간
         double start = System.currentTimeMillis();
 
@@ -290,7 +290,7 @@ public class WalkService {
 
         System.out.println("코드 걸린 시간: " + duration);
 
-        return hotSpot_all;
+        return board;
     }
 
 
@@ -561,6 +561,11 @@ public class WalkService {
                 Spot spot = spotList.get(Integer.toString(spot_index));
                 spot.getCoordList().add(c);
             }
+        }
+        HashMap<String,Spot> s = board.getSpotList();
+        System.out.println("보드 출력");
+        for(Spot spot :s.values()){
+            System.out.println("spotNum: " + spot.getNumber() + ", 좌표 개수: " + spot.getCoordList().size() +", isHot: " + spot.isHot());
         }
 
     }

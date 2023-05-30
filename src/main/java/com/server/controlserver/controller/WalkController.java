@@ -120,8 +120,8 @@ public class WalkController {
 
     @GetMapping("/api/walks/hotspot")
     @ResponseBody
-    public ResponseEntity<List<Spot>> findHotSpot(){
-        List<Spot> hotSpotList= walkService.findHotSpot();
+    public ResponseEntity<Board> findHotSpot(){
+        Board hotSpotList= walkService.findHotSpot();
         if(hotSpotList != null){
             return new ResponseEntity<>(hotSpotList, HttpStatus.OK);
         }else{
