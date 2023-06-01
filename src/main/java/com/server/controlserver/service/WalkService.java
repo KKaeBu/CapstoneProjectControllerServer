@@ -53,6 +53,11 @@ public class WalkService {
         this.petRepository = petRepository;
     }
 
+    public boolean deleteWalkByActivityId(Long activityId){
+        walkRepository.deleteByActivityId(activityId);
+        return true;
+    }
+
     public WalkResponseDto walkOver(WalkRequestDto walkRequestDto, String key, ConcurrentHashMap<String, List<PingRequestDto>> pingList, Long petId) {
         //Activity 저장
         Activity activity = walkRequestDto.toActivityEntity();

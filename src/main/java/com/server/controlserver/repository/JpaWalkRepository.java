@@ -37,6 +37,13 @@ public class JpaWalkRepository implements WalkRepository{
     }
 
     @Override
+    public void deleteByActivityId(Long activityId){
+        Walk walk = em.createQuery("select  w from Walk w where w.activity.id = :activityId", Walk.class)
+                .setParameter("activityId", activityId)
+                .getSingleResult();
+        em.remove(walk);
+    }
+    @Override
     public Optional<Walk> findById(Long id) {
         Walk walk = em.find(Walk.class, id);
         return Optional.ofNullable(walk);

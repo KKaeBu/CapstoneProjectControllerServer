@@ -88,6 +88,17 @@ public class WalkController {
         }
     }
 
+    // 액티비티 삭제용
+    @DeleteMapping("/api/walks/activities/{activityId}")
+    @ResponseBody
+    public ResponseEntity<String> deleteWalkByActivityId(@PathVariable Long activityId){
+        if(walkService.deleteWalkByActivityId(activityId)){
+            return new ResponseEntity<String>("성공적으로 삭제",HttpStatus.OK);
+        }else{
+            return new ResponseEntity<String>("실패",HttpStatus.BAD_REQUEST);
+        }
+    }
+
     // 한 강아지의 특정 산책 삭제
     @DeleteMapping("/api/pets/{petId}/walk/{walkId}")
     @ResponseBody
