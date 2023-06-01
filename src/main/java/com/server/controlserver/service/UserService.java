@@ -203,7 +203,7 @@ public class UserService {
 
     /* 중복 user 조회 */
     private void validateDuplicateUser(User user) {
-        userRepository.findByName(user.getName())
+        userRepository.findByUserId(user.getUserId())
                 .ifPresent(m -> {
                     throw new IllegalStateException("이미 존재하는 회원입니다.");
                 });
