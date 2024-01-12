@@ -19,35 +19,36 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class TransmitterController {
-    private final TransmitterService transmitterService;
-    private final WalkService walkService;
+  private final TransmitterService transmitterService;
+  private final WalkService walkService;
 
-    @Autowired
-    public TransmitterController(TransmitterService transmitterService, WalkService walkService) {
-        this.transmitterService = transmitterService;
-        this.walkService = walkService;
-    }
-    //  ******gps******
+  @Autowired
+  public TransmitterController(TransmitterService transmitterService, WalkService walkService) {
+    this.transmitterService = transmitterService;
+    this.walkService = walkService;
+  }
 
-    // GPS정보 (위도,경도) 클라이언트 -> 서버 전달 (테스트용)
-    @PostMapping("/api/gps")
-    @ResponseBody
-    public ResponseEntity<Long> GPS(@RequestBody PingRequestDto pingRquestDto) {
-        Long result = transmitterService.save(pingRquestDto);
-        return new ResponseEntity<Long>(result, HttpStatus.OK);
-    }
+  //  ******gps******
 
-    // GPS정보 (위도,경도) 서버 -> 클라이언트 전달
-    @GetMapping("/api/gps")
-    @ResponseBody
-    public ResponseEntity<GPS> getGPS() {
-        GPS gps = transmitterService.getLocation().get();
-        return new ResponseEntity<GPS>(gps,HttpStatus.OK);
-    }
+  // GPS정보 (위도,경도) 클라이언트 -> 서버 전달 (테스트용)
+  @PostMapping("/api/gps")
+  @ResponseBody
+  public ResponseEntity<Long> GPS(@RequestBody PingRequestDto pingRquestDto) {
+    Long result = transmitterService.save(pingRquestDto);
+    return new ResponseEntity<Long>(result, HttpStatus.OK);
+  }
 
-    @GetMapping("/api/gps/test")
-    @ResponseBody
-    public ResponseEntity<List<GPS>> getGpsList() {
-        return new ResponseEntity<List<GPS>>(transmitterService.getGpsList(),HttpStatus.OK);
-    }
+  // GPS정보 (위도,경도) 서버 -> 클라이언트 전달
+  @GetMapping("/api/gps")
+  @ResponseBody
+  public ResponseEntity<GPS> getGPS() {
+    GPS gps = transmitterService.getLocation().get();
+    return new ResponseEntity<GPS>(gps, HttpStatus.OK);
+  }
+
+  @GetMapping("/api/gps/test")
+  @ResponseBody
+  public ResponseEntity<List<GPS>> getGpsList() {
+    return new ResponseEntity<List<GPS>>(transmitterService.getGpsList(), HttpStatus.OK);
+  }
 }

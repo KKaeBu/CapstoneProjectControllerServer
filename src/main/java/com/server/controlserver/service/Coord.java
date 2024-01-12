@@ -12,8 +12,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Coord {
-    private double latitude; // 위도
-    private double longitude; // 경도
-    private Long stayTime; // 해당 좌표에 머문 시간
-    private PetResponseDto pet; // 해당 좌표를 표시한 펫의 정보
+  private double latitude; // 위도
+  private double longitude; // 경도
+  private Long stayTime; // 해당 좌표에 머문 시간
+  private PetResponseDto pet; // 해당 좌표를 표시한 펫의 정보
 }

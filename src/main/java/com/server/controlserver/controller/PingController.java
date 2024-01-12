@@ -15,21 +15,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 public class PingController {
-    private TransmitterController transmitterController;
-    private WalkService walkService;
-    @Autowired
-    public PingController(TransmitterController transmitterController, WalkService walkService) {
-        this.transmitterController = transmitterController;
-        this.walkService = walkService;
-    }
+  private TransmitterController transmitterController;
+  private WalkService walkService;
 
-    // GPS정보 (위도,경도) ping 저장
-    @PostMapping("/api/pings")
-    @ResponseBody
-    public ResponseEntity<?> Ping(@RequestBody PingRequestDto pingRquestDto) {
+  @Autowired
+  public PingController(TransmitterController transmitterController, WalkService walkService) {
+    this.transmitterController = transmitterController;
+    this.walkService = walkService;
+  }
 
-        return ResponseEntity.ok().build();
-    }
+  // GPS정보 (위도,경도) ping 저장
+  @PostMapping("/api/pings")
+  @ResponseBody
+  public ResponseEntity<?> Ping(@RequestBody PingRequestDto pingRquestDto) {
 
-
+    return ResponseEntity.ok().build();
+  }
 }

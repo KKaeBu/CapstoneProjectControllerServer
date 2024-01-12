@@ -17,21 +17,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PetRequestDto {
-    private String name; //이름
-    private int age; //나이
-    private String sex; //성별
-    private float weight; //몸무게
-    private Boolean isNeutered;//중성화 여부 (true = 1, false = 0)
-    private String species; //종
+  private String name; // 이름
+  private int age; // 나이
+  private String sex; // 성별
+  private float weight; // 몸무게
+  private Boolean isNeutered; // 중성화 여부 (true = 1, false = 0)
+  private String species; // 종
 
-    public Pet toEntity() {
-        return Pet.builder()
-                .name(this.name)
-                .age(this.age)
-                .sex(this.sex)
-                .weight(this.weight)
-                .isNeutered(this.isNeutered)
-                .species(this.species)
-                .build();
-    }
+  public Pet toEntity() {
+    return Pet.builder()
+        .name(this.name)
+        .age(this.age)
+        .sex(this.sex)
+        .weight(this.weight)
+        .isNeutered(this.isNeutered)
+        .species(this.species)
+        .build();
+  }
 }

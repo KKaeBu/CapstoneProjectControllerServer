@@ -18,27 +18,29 @@ import com.server.controlserver.domain.User;
 @Controller
 public class ValidateController {
 
-    private final JwtProvider jwtProvider;
-    private final UserService userService;
-    private final UserRepository userRepository;
+  private final JwtProvider jwtProvider;
+  private final UserService userService;
+  private final UserRepository userRepository;
 
-    public ValidateController(JwtProvider jwtProvider, UserService userService, UserRepository userRepository) {
-        this.jwtProvider = jwtProvider;
-        this.userService = userService;
-        this.userRepository = userRepository;
+  public ValidateController(
+      JwtProvider jwtProvider, UserService userService, UserRepository userRepository) {
+    this.jwtProvider = jwtProvider;
+    this.userService = userService;
+    this.userRepository = userRepository;
+  }
+
+  @PostMapping("/api/authorization")
+  @ResponseBody
+  public ResponseEntity<UserResponseDto> Auth(
+      @RequestHeader(value = "Authorization", required = false) String token) {
+    System.out.println(token);
+    String userId = jwtProvider.parseJwtToken(token);
+
+    if (userId != null) {
+      UserResponseDto user = userService.findByUserId(userId);
+      return new ResponseEntity<UserResponseDto>(user, HttpStatus.OK); /* http state code 200 반환 */
+    } else {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST); /* http state code 400 반환 */
     }
-
-    @PostMapping("/api/authorization")
-    @ResponseBody
-    public ResponseEntity<UserResponseDto> Auth(@RequestHeader(value = "Authorization", required=false) String token){
-        System.out.println(token);
-        String userId = jwtProvider.parseJwtToken(token);
-
-        if(userId != null){
-            UserResponseDto user = userService.findByUserId(userId);
-            return new ResponseEntity<UserResponseDto>(user, HttpStatus.OK); /* http state code 200 반환 */
-        }else{
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); /* http state code 400 반환 */
-        }
-    }
+  }
 }

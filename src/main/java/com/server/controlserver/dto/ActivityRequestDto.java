@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ActivityRequestDto {
-    private long durationTime;
-
+  private long durationTime;
 }

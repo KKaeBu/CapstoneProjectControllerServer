@@ -16,17 +16,18 @@ import java.util.Optional;
 @Controller
 public class ActivityController {
 
-    private final ActivityRepository activityRepository;
+  private final ActivityRepository activityRepository;
 
-    @Autowired
-    public ActivityController(ActivityRepository activityRepository) {
-        this.activityRepository = activityRepository;
-    }
+  @Autowired
+  public ActivityController(ActivityRepository activityRepository) {
+    this.activityRepository = activityRepository;
+  }
 
-    // 특정 산책의 활동량 가져오기
-    @GetMapping("/api/activities/{activityId}")
-    @ResponseBody
-    public ResponseEntity<Optional<Activity>> getActivity(@PathVariable Long activityId){
-        return new ResponseEntity<Optional<Activity>>(activityRepository.findById(activityId), HttpStatus.OK);
-    }
+  // 특정 산책의 활동량 가져오기
+  @GetMapping("/api/activities/{activityId}")
+  @ResponseBody
+  public ResponseEntity<Optional<Activity>> getActivity(@PathVariable Long activityId) {
+    return new ResponseEntity<Optional<Activity>>(
+        activityRepository.findById(activityId), HttpStatus.OK);
+  }
 }

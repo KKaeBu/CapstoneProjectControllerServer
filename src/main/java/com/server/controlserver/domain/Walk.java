@@ -12,29 +12,35 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="walk_tb")
+@Table(name = "walk_tb")
 @Entity
 public class Walk {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonBackReference
-    @JoinColumn(name = "pet_id")
-    private Pet pet;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "start_point")
-    private Ping startPoint;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "end_point")
-    private Ping endPoint;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "road_map")
-    private RoadMap roadMap;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "activity")
-    private Activity activity;
-    @Column(name = "walk_date")
-    @CreationTimestamp
-    private Date walkDate;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
+
+  @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @JsonBackReference
+  @JoinColumn(name = "pet_id")
+  private Pet pet;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "start_point")
+  private Ping startPoint;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "end_point")
+  private Ping endPoint;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "road_map")
+  private RoadMap roadMap;
+
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "activity")
+  private Activity activity;
+
+  @Column(name = "walk_date")
+  @CreationTimestamp
+  private Date walkDate;
 }

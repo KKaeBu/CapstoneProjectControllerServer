@@ -18,35 +18,32 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalkRequestDto {
-    private String roadMapName;
-    private long walkedTime;
-    private Double travelDistance;
-    private int burnedCalories;
-    private List<PingRequestDto> pingList;
-    private Date walkDate;
+  private String roadMapName;
+  private long walkedTime;
+  private Double travelDistance;
+  private int burnedCalories;
+  private List<PingRequestDto> pingList;
+  private Date walkDate;
 
-    public RoadMap toRoadMapEntity() {
-        return RoadMap.builder()
-                .roadMapName(this.roadMapName)
-                .pingList(new ArrayList<>())
-                .build();
-    }
+  public RoadMap toRoadMapEntity() {
+    return RoadMap.builder().roadMapName(this.roadMapName).pingList(new ArrayList<>()).build();
+  }
 
-    public Activity toActivityEntity() {
-        return Activity.builder()
-                .walkedTime(this.walkedTime)
-                .travelDistance(this.travelDistance)
-                .burnedCalories(this.burnedCalories)
-                .build();
-    }
+  public Activity toActivityEntity() {
+    return Activity.builder()
+        .walkedTime(this.walkedTime)
+        .travelDistance(this.travelDistance)
+        .burnedCalories(this.burnedCalories)
+        .build();
+  }
 
-    public Walk toWalkEntity(Ping startPoint, Ping endPoint, RoadMap roadMap, Activity activity) {
-        return Walk.builder()
-                .startPoint(startPoint)
-                .endPoint(endPoint)
-                .roadMap(roadMap)
-                .activity(activity)
-                .walkDate(this.walkDate)
-                .build();
-    }
+  public Walk toWalkEntity(Ping startPoint, Ping endPoint, RoadMap roadMap, Activity activity) {
+    return Walk.builder()
+        .startPoint(startPoint)
+        .endPoint(endPoint)
+        .roadMap(roadMap)
+        .activity(activity)
+        .walkDate(this.walkDate)
+        .build();
+  }
 }

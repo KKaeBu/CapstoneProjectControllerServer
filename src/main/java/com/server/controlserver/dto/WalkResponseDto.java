@@ -16,9 +16,9 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WalkResponseDto {
-    private Ping startPoint;
-    private Ping endPoint;
-    private RoadMap roadMap;
-    private Activity activity;
-    private Date walkDate;
+  private Ping startPoint;
+  private Ping endPoint;
+  private RoadMap roadMap;
+  private Activity activity;
+  private Date walkDate;
 }
